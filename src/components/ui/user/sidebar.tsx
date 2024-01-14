@@ -3,6 +3,7 @@
 import { INavbarItem } from "@/lib/data/navbar.data";
 import { cn } from "@/lib/utils";
 import { isSidebarOpen } from "@/store";
+import { CaretRightIcon } from "@radix-ui/react-icons";
 import { useAtom } from "jotai";
 
 export default function UserSidebar({
@@ -49,9 +50,9 @@ export default function UserSidebar({
             </svg>
           </button>
         </div>
-        <div className="mt-5 w-full bg-white py-4 px-3 rounded shadow-sm">
+        <div className="mt-5 w-full bg-card py-4 px-3 rounded shadow-sm">
           <h2 className="text-lg font-semibold">Hi, Buyer</h2>
-          <p className="text-slate-500 text-sm font-light font mt-2">
+          <p className="text-muted-foreground text-sm font-light font mt-2">
             Please login to get cheaper price. If you dont have an account,
             please create account by clicking the button below.
           </p>
@@ -59,7 +60,7 @@ export default function UserSidebar({
             <button className="bg-primary text-white font-semibold py-2 px-4 rounded">
               Login
             </button>
-            <button className="bg-white text-primary font-semibold py-2 px-4 rounded border border-primary">
+            <button className="bg-card text-primary font-semibold py-2 px-4 rounded border border-primary">
               Create Account
             </button>
           </div>
@@ -69,45 +70,19 @@ export default function UserSidebar({
           <li className="mt-5 flex flex-col">
             <h3 className="text-sm font-medium">Transaction</h3>
             <ul className="mt-2 flex flex-col gap-2">
-              <li className="bg-white rounded w-full inline-flex items-center justify-between px-2 h-16">
+              <li className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16">
                 <a href="#" className="py-2 px-4 block w-full">
                   <span className="text-base font-light">My Transaction</span>
                 </a>
-                <svg
-                  width="32"
-                  height="32"
-                  viewBox="0 0 32 32"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M11.9595 23.3738C11.569 22.9832 11.569 22.3501 11.9595 21.9596L17.9191 16L11.9595 10.0404C11.569 9.64991 11.569 9.01674 11.9595 8.62622C12.35 8.2357 12.9832 8.2357 13.3737 8.62622L20.0404 15.2929C20.2279 15.4804 20.3333 15.7348 20.3333 16C20.3333 16.2652 20.2279 16.5196 20.0404 16.7071L13.3737 23.3738C12.9832 23.7643 12.35 23.7643 11.9595 23.3738Z"
-                    fill="#363853"
-                  />
-                </svg>
+                <CaretRightIcon className="scale-125" />
               </li>
-              <li className="bg-white rounded w-full inline-flex items-center justify-between px-2 h-16">
+              <li className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16">
                 <a href="#" className="py-2 px-4 block w-full">
                   <span className="text-base font-light">
                     Check Transaction by ID
                   </span>
                 </a>
-                <svg
-                  width="32"
-                  height="32"
-                  viewBox="0 0 32 32"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M11.9595 23.3738C11.569 22.9832 11.569 22.3501 11.9595 21.9596L17.9191 16L11.9595 10.0404C11.569 9.64991 11.569 9.01674 11.9595 8.62622C12.35 8.2357 12.9832 8.2357 13.3737 8.62622L20.0404 15.2929C20.2279 15.4804 20.3333 15.7348 20.3333 16C20.3333 16.2652 20.2279 16.5196 20.0404 16.7071L13.3737 23.3738C12.9832 23.7643 12.35 23.7643 11.9595 23.3738Z"
-                    fill="#363853"
-                  />
-                </svg>
+                <CaretRightIcon className="scale-125" />
               </li>
             </ul>
           </li>
@@ -115,62 +90,23 @@ export default function UserSidebar({
           <li className="mt-5 flex flex-col">
             <h3 className="text-sm font-medium">Tools</h3>
             <ul className="mt-2 flex flex-col gap-2">
-              <li className="bg-white rounded w-full inline-flex items-center justify-between px-2 h-16">
+              <li className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16">
                 <a href="#" className="py-2 px-4 block w-full">
                   <span className="text-base font-light">Hitung Winrate</span>
                 </a>
-                <svg
-                  width="32"
-                  height="32"
-                  viewBox="0 0 32 32"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M11.9595 23.3738C11.569 22.9832 11.569 22.3501 11.9595 21.9596L17.9191 16L11.9595 10.0404C11.569 9.64991 11.569 9.01674 11.9595 8.62622C12.35 8.2357 12.9832 8.2357 13.3737 8.62622L20.0404 15.2929C20.2279 15.4804 20.3333 15.7348 20.3333 16C20.3333 16.2652 20.2279 16.5196 20.0404 16.7071L13.3737 23.3738C12.9832 23.7643 12.35 23.7643 11.9595 23.3738Z"
-                    fill="#363853"
-                  />
-                </svg>
+                <CaretRightIcon className="scale-125" />
               </li>
-              <li className="bg-white rounded w-full inline-flex items-center justify-between px-2 h-16">
+              <li className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16">
                 <a href="#" className="py-2 px-4 block w-full">
                   <span className="text-base font-light">HP Magic While</span>
                 </a>
-                <svg
-                  width="32"
-                  height="32"
-                  viewBox="0 0 32 32"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M11.9595 23.3738C11.569 22.9832 11.569 22.3501 11.9595 21.9596L17.9191 16L11.9595 10.0404C11.569 9.64991 11.569 9.01674 11.9595 8.62622C12.35 8.2357 12.9832 8.2357 13.3737 8.62622L20.0404 15.2929C20.2279 15.4804 20.3333 15.7348 20.3333 16C20.3333 16.2652 20.2279 16.5196 20.0404 16.7071L13.3737 23.3738C12.9832 23.7643 12.35 23.7643 11.9595 23.3738Z"
-                    fill="#363853"
-                  />
-                </svg>
+                <CaretRightIcon className="scale-125" />
               </li>
-              <li className="bg-white rounded w-full inline-flex items-center justify-between px-2 h-16">
+              <li className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16">
                 <a href="#" className="py-2 px-4 block w-full">
                   <span className="text-base font-light">HP Zodiac</span>
                 </a>
-                <svg
-                  width="32"
-                  height="32"
-                  viewBox="0 0 32 32"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M11.9595 23.3738C11.569 22.9832 11.569 22.3501 11.9595 21.9596L17.9191 16L11.9595 10.0404C11.569 9.64991 11.569 9.01674 11.9595 8.62622C12.35 8.2357 12.9832 8.2357 13.3737 8.62622L20.0404 15.2929C20.2279 15.4804 20.3333 15.7348 20.3333 16C20.3333 16.2652 20.2279 16.5196 20.0404 16.7071L13.3737 23.3738C12.9832 23.7643 12.35 23.7643 11.9595 23.3738Z"
-                    fill="#363853"
-                  />
-                </svg>
+                <CaretRightIcon className="scale-125" />
               </li>
             </ul>
           </li>

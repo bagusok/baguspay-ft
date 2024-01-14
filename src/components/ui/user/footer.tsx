@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function UserFooter() {
   return (
-    <div className="bg-white mt-20 pt-5 pb-24 md:pb-3 w-full">
+    <div className="bg-background mt-20 pt-5 pb-24 md:pb-3 w-full">
       <div className="flex flex-col md:flex-row md:gap-10 md:justify-between">
         <div
           id="footer-info"
@@ -17,7 +17,7 @@ export default function UserFooter() {
                   <h2 className="text-xl font-semibold text-center md:text-start">
                     {item.title}
                   </h2>
-                  <p className="mt-3 text-xs text-slate-500 text-justify">
+                  <p className="mt-3 text-xs text-muted-foreground text-justify">
                     {item?.description}
                   </p>
                 </div>
@@ -61,7 +61,7 @@ export default function UserFooter() {
                     <Link
                       key={index}
                       href={item.url}
-                      className="text-sm font-medium text-slate-500"
+                      className="text-sm font-medium text-muted-foreground"
                     >
                       {item.title}
                     </Link>
@@ -73,7 +73,7 @@ export default function UserFooter() {
         </div>
       </div>
       <div id="copyright" className="mt-16">
-        <p className="text-sm text-slate-500 text-start">
+        <p className="text-sm text-muted-foreground text-start">
           Copyright &copy; 2023{" "}
           <a href="/" className="text-primary hover:underline">
             Topup Receh
