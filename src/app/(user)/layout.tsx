@@ -2,6 +2,7 @@ import SidebarDesktop from "@/components/ui/user/sidebar";
 import UserNavbar from "@/components/ui/user/navbar";
 import navbarItems from "@/lib/data/navbar.data";
 import UserSidebar from "@/components/ui/user/sidebar";
+import UserFooter from "@/components/ui/user/footer";
 
 export default function UserLayout({
   children,
@@ -13,9 +14,10 @@ export default function UserLayout({
       <main className="w-dvw min-h-dvh md:flex ">
         <div className="flex-auto flex flex-col">
           <UserNavbar navItems={navbarItems} />
-          <div className="p-6 md:p-8">
+          <div className="p-6 md:px-16 ">
             <UserSidebar></UserSidebar>
-            {children}
+            <div className="min-h-dvh">{children}</div>
+            <UserFooter></UserFooter>
           </div>
         </div>
       </main>
