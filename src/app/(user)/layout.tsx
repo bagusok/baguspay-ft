@@ -1,3 +1,8 @@
+import SidebarDesktop from "@/components/ui/user/sidebar";
+import UserNavbar from "@/components/ui/user/navbar";
+import navbarItems from "@/lib/data/navbar.data";
+import UserSidebar from "@/components/ui/user/sidebar";
+
 export default function UserLayout({
   children,
 }: {
@@ -6,10 +11,12 @@ export default function UserLayout({
   return (
     <>
       <main className="w-dvw min-h-dvh md:flex ">
-        <div className="hidden md:block md:w-80 lg:w-96 bg-slate-200 flex-initial"></div>
         <div className="flex-auto flex flex-col">
-          <header className="h-16 md:h-20 bg-white inline-flex items-center md:border-b-[0.5px] md:border-slate-300 shadow-sm"></header>
-          <div className="p-6 md:p-8">{children}</div>
+          <UserNavbar navItems={navbarItems} />
+          <div className="p-6 md:p-8">
+            <UserSidebar></UserSidebar>
+            {children}
+          </div>
         </div>
       </main>
     </>
