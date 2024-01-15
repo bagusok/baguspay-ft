@@ -19,7 +19,7 @@ export default function UserLayout({
         <div className="flex-auto flex flex-col">
           <UserNavbar navItems={navbarItems} />
           <div className="p-6 md:px-16 ">
-            <UserSidebar></UserSidebar>
+            <UserSidebar navItems={navbarItems}></UserSidebar>
             <div className="min-h-dvh">{children}</div>
             <UserFooter></UserFooter>
           </div>

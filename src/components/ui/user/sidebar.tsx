@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { isSidebarOpen } from "@/store";
 import { CaretRightIcon } from "@radix-ui/react-icons";
 import { useAtom } from "jotai";
+import Link from "next/link";
 
 export default function UserSidebar({
   navItems = [],
@@ -66,50 +67,36 @@ export default function UserSidebar({
           </div>
         </div>
         <ul id="sidebar__menu-item">
-          {/* Transaction */}
-          <li className="mt-5 flex flex-col">
-            <h3 className="text-sm font-medium">Transaction</h3>
-            <ul className="mt-2 flex flex-col gap-2">
-              <li className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16">
-                <a href="#" className="py-2 px-4 block w-full">
-                  <span className="text-base font-light">My Transaction</span>
-                </a>
-                <CaretRightIcon className="scale-125" />
-              </li>
-              <li className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16">
-                <a href="#" className="py-2 px-4 block w-full">
-                  <span className="text-base font-light">
-                    Check Transaction by ID
-                  </span>
-                </a>
-                <CaretRightIcon className="scale-125" />
-              </li>
-            </ul>
-          </li>
-          {/* Tools */}
-          <li className="mt-5 flex flex-col">
-            <h3 className="text-sm font-medium">Tools</h3>
-            <ul className="mt-2 flex flex-col gap-2">
-              <li className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16">
-                <a href="#" className="py-2 px-4 block w-full">
-                  <span className="text-base font-light">Hitung Winrate</span>
-                </a>
-                <CaretRightIcon className="scale-125" />
-              </li>
-              <li className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16">
-                <a href="#" className="py-2 px-4 block w-full">
-                  <span className="text-base font-light">HP Magic While</span>
-                </a>
-                <CaretRightIcon className="scale-125" />
-              </li>
-              <li className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16">
-                <a href="#" className="py-2 px-4 block w-full">
-                  <span className="text-base font-light">HP Zodiac</span>
-                </a>
-                <CaretRightIcon className="scale-125" />
-              </li>
-            </ul>
-          </li>
+          {navItems?.map((item, index) => {
+            if (item.isHaveChild) {
+              return (
+                <li key={index} className="mt-5 flex flex-col">
+                  <h3 className="text-sm font-medium">{item.title}</h3>
+                  <ul className="mt-2 flex flex-col gap-2">
+                    {item.isHaveChild &&
+                      item.child?.map((child, index2) => {
+                        return (
+                          <li
+                            key={index2}
+                            className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16 border border-slate-300 shadow-sm dark:border-none"
+                          >
+                            <Link
+                              href={child.url}
+                              className="py-2 px-4 block w-full"
+                            >
+                              <span className="text-base font-light">
+                                {child.title}
+                              </span>
+                            </Link>
+                            <CaretRightIcon className="scale-125" />
+                          </li>
+                        );
+                      })}
+                  </ul>
+                </li>
+              );
+            }
+          })}
         </ul>
       </div>
     </>
