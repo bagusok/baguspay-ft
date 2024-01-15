@@ -1,9 +1,13 @@
-import Image from "next/image";
+"use client";
+import { useQuery } from "@tanstack/react-query";
+import BannerHome from "./banner-home";
 
 export default function Home() {
   return (
-    <main>
-      <h1>HAI AKU POPPINS</h1>
-    </main>
+    <>
+      <main>
+        <BannerHome />
+      </main>
+    </>
   );
 }
