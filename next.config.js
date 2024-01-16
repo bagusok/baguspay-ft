@@ -4,9 +4,8 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "is3.cloudhost.id",
+        hostname: "***",
         port: "",
-        pathname: "/bagusok/**",
       },
     ],
   },
