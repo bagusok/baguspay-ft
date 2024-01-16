@@ -28,7 +28,7 @@ export default function UserNavbar({
 
   return (
     <>
-      <header className="h-16 bg-background inline-flex justify-between items-center md:px-14 lg:px-32 px-6">
+      <header className="w-full h-16 bg-background inline-flex justify-between items-center md:px-14 lg:px-32 px-6">
         <div id="title">
           {isMobile ? (
             <>
