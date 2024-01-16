@@ -15,14 +15,12 @@ export default function UserLayout({
 }) {
   return (
     <>
-      <main className="w-dvw min-h-dvh md:flex">
-        <div className="flex-auto flex flex-col">
-          <UserNavbar navItems={navbarItems} />
-          <div className="p-6 md:px-14 lg:px-32 ">
-            <UserSidebar navItems={navbarItems}></UserSidebar>
-            <div className="min-h-dvh">{children}</div>
-            <UserFooter></UserFooter>
-          </div>
+      <main className="w-full">
+        <UserNavbar navItems={navbarItems} />
+        <div className="p-6 md:px-14 lg:px-32 ">
+          <UserSidebar navItems={navbarItems}></UserSidebar>
+          {children}
+          <UserFooter></UserFooter>
         </div>
       </main>
     </>
