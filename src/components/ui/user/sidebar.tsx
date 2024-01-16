@@ -58,7 +58,7 @@ export default function UserSidebar({
             please create account by clicking the button below.
           </p>
           <div id="sidebar__btn-login" className="inline-flex gap-2 mt-3">
-            <button className="bg-primary text-white font-semibold py-2 px-4 rounded">
+            <button className="bg-primary text-primary-foreground font-semibold py-2 px-4 rounded">
               Login
             </button>
             <button className="bg-card text-primary font-semibold py-2 px-4 rounded border border-primary">
