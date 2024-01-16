@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 
 export default function BannerHome() {
-  const { data, error, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["getMainBanner"],
     queryFn: () =>
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/banner`).then((res) =>
@@ -16,8 +16,8 @@ export default function BannerHome() {
       ),
   });
 
-  if (isLoading) return <BannerIsLoading />;
-  if (error) return <div>Something went wrong</div>;
+  if (isLoading || isError) return <BannerIsLoading />;
+  if (isError) return <div>Something went wrong</div>;
 
   return (
     <section
