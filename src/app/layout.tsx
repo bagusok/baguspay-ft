@@ -16,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <QueryClientProvider client={queryClient}>
-        <body className={theme + " box-border"}>{children}</body>
+        <body className={theme + " w-full h-full relative overflow-x-hidden"}>
+          {children}
+        </body>
       </QueryClientProvider>
     </html>
   );
