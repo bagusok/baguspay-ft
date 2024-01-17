@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { RadioGroup, Tab } from "@headlessui/react";
-import { Metadata } from "next";
 import Image from "next/image";
 import { useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
@@ -23,12 +22,11 @@ import SelectPaymentMethod from "./select-payment-method";
 import { Button } from "@/components/ui/button";
 
 export default function OrderPage() {
-  const [openDesc, setOpenDesc] = useState(false);
   const [productSelected, setProductSelected] = useState("");
   const [paymentSelected, setPaymentSelected] = useState("");
-  const [openDrawer, setOpenDrawer] = useState(false);
 
   const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const dummyProduct = [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -36,7 +34,7 @@ export default function OrderPage() {
   ];
 
   return (
-    <section className="w-full grid lg:grid-cols-3 gap-4">
+    <section className="w-full grid lg:grid-cols-3 gap-4 relative">
       <div className="w-full lg:col-span-2 flex flex-col gap-4 ">
         <div className="hidden md:block h-24 md:h-40 w-full bg-slate-300 rounded relative overflow-hidden">
           <Image
@@ -78,13 +76,60 @@ export default function OrderPage() {
           <Badge variant="outline">Otomatis</Badge>
           <Badge variant="outline">Cepat</Badge>
         </div>
+
+        <form action="" className="mt-4 md:hidden">
+          <div id="split" className="w-full grid grid-cols-2 gap-2 mb-2">
+            <div id="form-group">
+              <Label htmlFor="input1">Masukkan UID</Label>
+              <Input name="input1" placeholder="Your UID"></Input>
+            </div>
+            <div id="form-group">
+              <Label htmlFor="input1">Masukkan Server</Label>
+              <Select>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Server" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="apple">Asia</SelectItem>
+                    <SelectItem value="banana">Global</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <Label className="text-muted-foreground  text-xs">
+            Temukan ID dan Server Anda di dalam game pada menu Profile
+          </Label>
+          <div
+            className={cn(
+              "fixed bottom-0 left-0 right-0 z-40 w-full bg-card px-4 py-4 border-t-slate-300 border-2 rounded-tl-2xl rounded-tr-2xl dark:border-t-white/60",
+              {
+                hidden: productSelected.length == 0,
+                block: productSelected.length > 0,
+              }
+            )}
+          >
+            <SelectPaymentMethod
+              selectedItem={paymentSelected}
+              setSelectedItem={setPaymentSelected}
+            />
+            <div className="w-full inline-flex justify-between items-center mt-3 bg-card">
+              <h4 className="font-semibold text-sm">Rp 29.000</h4>
+              <Button className="text-sm bg-primary text-primary-foreground">
+                Checkout
+              </Button>
+            </div>
+          </div>
+        </form>
+
         <div className="w-full">
           <Tab.Group>
             <Tab.List className="inline-flex overflow-x-auto gap-3">
-              <Tab className="px-5 py-2 text-base font-bold bg-card border ui-not-selected:border-slate-200 ui-selected:border-slate-400 dark:ui-not-selected:border-none dark:ui-selected:border-white rounded-md">
+              <Tab className="px-5 py-2 text-sm font-bold bg-card border ui-not-selected:border-slate-200 ui-selected:border-slate-400 dark:ui-not-selected:border-none dark:ui-selected:border-white rounded-md">
                 Diamond
               </Tab>
-              <Tab className="px-5 py-2 text-base font-bold bg-card border ui-not-selected:border-slate-200 ui-selected:border-slate-400 dark:ui-not-selected:border-none dark:ui-selected:border-white rounded-md">
+              <Tab className="px-5 py-2 text-sm font-bold bg-card border ui-not-selected:border-slate-200 ui-selected:border-slate-400 dark:ui-not-selected:border-none dark:ui-selected:border-white rounded-md">
                 Weekly Pass
               </Tab>
             </Tab.List>
@@ -157,9 +202,10 @@ export default function OrderPage() {
           </Tab.Group>
         </div>
       </div>
+
       <div className="w-full h-fit lg:col-span-1 bg-card lg:p-5 rounded-lg">
         <h2 className="text-2xl font-bold">Detail Pesanan</h2>
-        <form action="" className="mt-4">
+        <form action="" className="mt-4 hidden md:block">
           <div id="split" className="w-full grid grid-cols-2 gap-2 mb-2">
             <div id="form-group">
               <Label htmlFor="input1">Masukkan UID</Label>

@@ -45,13 +45,13 @@ export default function SelectPaymentMethod({
 }) {
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
-  const [plan, setPlan] = useState("");
 
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Input
+            className="dark:outline-1 dark:border-white/80 h-12 rounded-md"
             readOnly
             placeholder="Pilih Pembayaran"
             value={!!selectedItem ? selectedItem : "Pilih Pembayaran"}
@@ -165,6 +165,7 @@ export default function SelectPaymentMethod({
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <Input
+          className="dark:outline-1 dark:border-white/80 h-12 rounded-md"
           readOnly
           placeholder="Pilih Pembayaran"
           value={!!selectedItem ? selectedItem : "Pilih Pembayaran"}
