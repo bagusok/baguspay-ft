@@ -38,7 +38,7 @@ export default function AllService() {
 
                   <h3 className="text-lg font-semibold mt-3">Free Fire</h3>
                   <Link href="/order/free-fire" className="w-full">
-                    <Button className="mt-6 bg-green-200/80 border border-green-600 text-black rounded-full w-full text-sm">
+                    <Button className="mt-6 bg-primary rounded-full w-full text-sm">
                       Topup
                     </Button>
                   </Link>

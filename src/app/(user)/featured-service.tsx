@@ -6,7 +6,7 @@ export default function FeaturedService() {
   return (
     <section className="w-full overflow-hidden relative">
       <h2 className="text-xl font-bold">Game Terlaris</h2>
-      <div className="w-full mt-3 p-4 bg-green-200/50 flex flex-row justify-start gap-4 overflow-x-auto">
+      <div className="w-full mt-3 p-4 flex flex-row justify-start gap-4 overflow-x-auto">
         {arr.map((item, index) => (
           <div
             key={index}
@@ -21,7 +21,7 @@ export default function FeaturedService() {
             ></Image>
 
             <h3 className="text-lg font-semibold mt-3">Free Fire</h3>
-            <Button className="mt-6 bg-green-200/80 border border-green-600 text-black rounded-full w-full text-sm">
+            <Button className="mt-6 bg-primary rounded-full w-full text-sm">
               Topup
             </Button>
           </div>

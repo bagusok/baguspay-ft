@@ -14,12 +14,12 @@ const navbarItems: INavbarItem[] = [
       {
         id: 3,
         title: "My Transactions",
-        url: "/transactions/all",
+        url: "/my-transactions",
       },
       {
         id: 4,
         title: "Check Transactions by ID",
-        url: "/transactions/check",
+        url: "/track-transaction",
       },
     ],
   },
