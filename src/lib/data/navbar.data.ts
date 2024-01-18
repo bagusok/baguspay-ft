@@ -173,4 +173,27 @@ export const sidebarAdmin: INavbarItem[] = [
       },
     ],
   },
+  {
+    id: 5,
+    title: "Web Settings",
+    url: "/admin/web-settings",
+    isHaveChild: true,
+    child: [
+      {
+        id: 6,
+        title: "Front Banner",
+        url: "/admin/web-settings/front-banner",
+      },
+      {
+        id: 7,
+        title: "Meta SEO",
+        url: "/admin/web-settings/meta-seo",
+      },
+      {
+        id: 8,
+        title: "Additionals",
+        url: "/admin/payments/additionals",
+      },
+    ],
+  },
 ];

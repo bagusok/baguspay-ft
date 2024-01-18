@@ -22,7 +22,7 @@ export function SidebarItemWthoutChild({ data }: { data: INavbarItem }) {
     <Link
       href=""
       className={cn(
-        "w-full rounded-md text-sm font-semibold h-10 inline-flex items-center justify-between px-4 hover:bg-slate-200 dark:hover:bg-slate-50/20",
+        "w-full flex-none rounded-md text-sm font-semibold h-10 inline-flex items-center justify-between px-4 hover:bg-slate-200 dark:hover:bg-slate-50/20",
         {
           "bg-primary text-primary-foreground": isOpen,
         }
@@ -48,7 +48,7 @@ export function SidebarItemWithChild({ data }: { data: INavbarItem }) {
     <>
       <button
         className={cn(
-          "w-full rounded-md text-sm font-semibold h-10 inline-flex items-center justify-between px-4 hover:bg-slate-200 dark:hover:bg-slate-50/20",
+          "w-full flex-none rounded-md text-sm font-semibold h-10 inline-flex items-center justify-between px-4 hover:bg-slate-200 dark:hover:bg-slate-50/20",
           {
             "bg-primary text-primary-foreground":
               isOpen && pathName.includes(data.url),
