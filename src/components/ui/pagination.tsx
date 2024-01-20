@@ -7,6 +7,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { ButtonProps, buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
 
 const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
   <nav
@@ -32,8 +33,10 @@ PaginationContent.displayName = "PaginationContent";
 const PaginationItem = React.forwardRef<
   HTMLLIElement,
   React.ComponentProps<"li">
->(({ className, ...props }, ref) => (
-  <li ref={ref} className={cn("", className)} {...props} />
+>(({ className, children, ...props }, ref) => (
+  <li ref={ref} className={cn("", className)} {...props}>
+    {children}
+  </li>
 ));
 PaginationItem.displayName = "PaginationItem";
 
@@ -46,10 +49,15 @@ const PaginationLink = ({
   className,
   isActive,
   size = "icon",
+  href,
+  children,
+  ref,
   ...props
 }: PaginationLinkProps) => (
   <PaginationItem>
-    <a
+    <Link
+      ref={ref as any}
+      href={href ?? "#"}
       aria-current={isActive ? "page" : undefined}
       className={cn(
         buttonVariants({
@@ -59,7 +67,9 @@ const PaginationLink = ({
         className
       )}
       {...props}
-    />
+    >
+      {children}
+    </Link>
   </PaginationItem>
 );
 PaginationLink.displayName = "PaginationLink";
