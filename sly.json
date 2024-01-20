@@ -1,0 +1,11 @@
+{
+  "$schema": "https://sly-cli.fly.dev/registry/config.json",
+  "libraries": [
+    {
+      "name": "jolly-ui",
+      "directory": "./src/app/components/ui",
+      "postinstall": [],
+      "transformers": []
+    }
+  ]
+}
