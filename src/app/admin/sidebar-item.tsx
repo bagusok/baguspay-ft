@@ -20,7 +20,7 @@ export function SidebarItemWthoutChild({ data }: { data: INavbarItem }) {
 
   return (
     <Link
-      href=""
+      href={data.url}
       className={cn(
         "w-full flex-none rounded-md text-sm font-semibold h-10 inline-flex items-center justify-between px-4 hover:bg-slate-200 dark:hover:bg-slate-50/20",
         {
@@ -28,7 +28,7 @@ export function SidebarItemWthoutChild({ data }: { data: INavbarItem }) {
         }
       )}
     >
-      Dashboard
+      {data.title}
     </Link>
   );
 }
@@ -58,7 +58,7 @@ export function SidebarItemWithChild({ data }: { data: INavbarItem }) {
         )}
         onClick={() => setIsOpen((prev) => !prev)}
       >
-        <span>Serivice</span>
+        <span>{data.title}</span>
         <span>
           <ChevronDownIcon
             className={cn("transition-all duration-300 ease-in-out ", {
@@ -77,7 +77,7 @@ export function SidebarItemWithChild({ data }: { data: INavbarItem }) {
           return (
             <li key={index}>
               <Link
-                href=""
+                href={item.url}
                 className={cn(
                   "w-full text-sm text-muted-foreground font-light h-8 inline-flex items-center justify-between px-4 border-l border-primary hover:underline",
                   {
@@ -85,7 +85,7 @@ export function SidebarItemWithChild({ data }: { data: INavbarItem }) {
                   }
                 )}
               >
-                Add Service
+                {item.title}
               </Link>
             </li>
           );
