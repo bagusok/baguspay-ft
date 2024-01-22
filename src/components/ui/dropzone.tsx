@@ -1,20 +1,33 @@
-"use client"
+import Image from "next/image";
+import { useDropzone } from "react-dropzone";
 
-import * as React from "react"
-import { DropZone, DropZoneProps } from "react-aria-components"
+export default function Dropzone({
+  onDrop,
+}: {
+  onDrop: (acceptedFiles: File[]) => void;
+}) {
+  const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
+    useDropzone({ onDrop });
 
-import { cn } from "@/lib/utils"
+  return (
+    <div
+      className="w-full rounded-lg border min-h-24 max-h-40 inline-flex justify-center items-center"
+      {...getRootProps()}
+    >
+      <input {...getInputProps()} />
+      {isDragActive && acceptedFiles.length == 0 && <p>Drop the files here</p>}
 
-const _DropZone = ({ className, ...props }: DropZoneProps) => (
-  <DropZone
-    className={(values) =>
-      cn(
-        "flex h-[150px] w-[300px] flex-col items-center justify-center gap-2 rounded-md border border-dashed text-sm data-[drop-target]:border-solid data-[drop-target]:border-primary data-[drop-target]:bg-accent",
-        typeof className === "function" ? className(values) : className
-      )
-    }
-    {...props}
-  />
-)
-
-export { _DropZone as DropZone }
+      {acceptedFiles.length > 0 ? (
+        <Image
+          src={URL.createObjectURL(acceptedFiles[0])}
+          alt="img"
+          width={100}
+          height={100}
+          className="w-full max-h-40 rounded-md object-cover"
+        />
+      ) : (
+        <p className="text-center">Drag files here</p>
+      )}
+    </div>
+  );
+}

@@ -23,7 +23,7 @@ export default function MyTransaction() {
     <section>
       <h2 className="text-lg font-bold">History Transaksi</h2>
 
-      <Table className="mt-4">
+      <Table className="mt-4" suppressHydrationWarning>
         <TableCaption>A list of your recent invoices.</TableCaption>
         <TableHeader>
           <TableRow>
@@ -52,26 +52,19 @@ export default function MyTransaction() {
       </Table>
       <Pagination className="mt-5">
         <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious href="#" />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">1</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#" isActive>
-              2
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">3</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext href="#" />
-          </PaginationItem>
+          <PaginationPrevious href="#" />
+
+          <PaginationLink href="#">1</PaginationLink>
+
+          <PaginationLink href="#" isActive>
+            2
+          </PaginationLink>
+
+          <PaginationLink href="#">3</PaginationLink>
+
+          <PaginationEllipsis />
+
+          <PaginationNext href="#" />
         </PaginationContent>
       </Pagination>
     </section>

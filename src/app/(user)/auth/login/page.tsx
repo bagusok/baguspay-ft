@@ -3,12 +3,56 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { apiUrl } from "@/lib/constant";
+import { userTokenAtom } from "@/store";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
+import { useAtom } from "jotai";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const [hidePassword, setHidePassword] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [getUserToken, setUserToken] = useAtom(userTokenAtom);
+
+  const router = useRouter();
+
+  if (getUserToken) {
+    router.push("/");
+  }
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    const login = await fetch(`${apiUrl}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: e.currentTarget.email.value,
+        password: e.currentTarget.password.value,
+      }),
+    });
+
+    try {
+      const loginResponse = await login.json();
+      if (loginResponse.statusCode === 200) {
+        setUserToken(loginResponse.data.token);
+        toast.success(loginResponse.message);
+      } else {
+        toast.error(loginResponse.message);
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong");
+    }
+
+    setIsLoading(false);
+  };
 
   return (
     <section className="w-full inline-flex justify-center md:mt-14">
@@ -18,10 +62,15 @@ export default function LoginPage() {
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime,
           doloribus.
         </p>
-        <form action="" className="flex flex-col gap-2">
+        <form onSubmit={handleLogin} className="flex flex-col gap-2">
           <div className="w-full">
             <Label htmlFor="email">Email</Label>
-            <Input type="text" name="email" placeholder="email@mail.com" />
+            <Input
+              type="text"
+              name="email"
+              placeholder="email@mail.com"
+              required
+            />
           </div>
           <div className="w-full">
             <Label htmlFor="email">Password</Label>
@@ -31,6 +80,7 @@ export default function LoginPage() {
                 name="password"
                 placeholder="P@ssW0!2D"
                 className="pr-10"
+                required
               />
               {hidePassword ? (
                 <EyeOpenIcon
@@ -46,8 +96,12 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <Button type="submit" className="mt-3">
-            Login
+          <Button
+            type="submit"
+            className="mt-3 disabled:opacity-50"
+            disabled={isLoading}
+          >
+            {isLoading ? "Loading..." : "Login"}
           </Button>
         </form>
         <div className="mt-3">
