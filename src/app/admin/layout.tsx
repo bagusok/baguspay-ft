@@ -1,6 +1,5 @@
 import AuthLayout from "../(user)/auth/auth-layout";
 import ButtonOpenSidebarAdmin from "./ButtonOpenSidebar";
-import FilePicker from "./_file-picker/file-picker";
 import SidebarAdmin from "./sidebar-admin";
 
 export default function UserLayout({
@@ -11,8 +10,7 @@ export default function UserLayout({
   return (
     <main className="flex flex-row relative">
       <AuthLayout roles={["ADMIN"]}>
-        <FilePicker />
-        <SidebarAdmin />{" "}
+        <SidebarAdmin />
         <section className="w-full px-4 md:px-10">
           <header className="w-full h-16 inline-flex justify-between items-center mb-5">
             <ButtonOpenSidebarAdmin />
