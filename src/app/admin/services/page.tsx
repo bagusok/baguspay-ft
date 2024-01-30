@@ -1,35 +1,62 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { apiUrl } from "@/lib/constant";
+import { cn } from "@/lib/utils";
+import { userTokenAtom } from "@/store";
+import { useQuery } from "@tanstack/react-query";
+import { useAtomValue } from "jotai";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 export default function AdminServices() {
   const router = useRouter();
+  const userToken = useAtomValue(userTokenAtom);
+  const getService = useQuery({
+    queryKey: ["getService", userToken],
+    queryFn: async () => {
+      const res = await fetch(`${apiUrl}/services`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      return res.json();
+    },
+  });
 
   return (
     <>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-        <div
-          className="rounded-md bg-slate-100 shadow-sm p-3 inline-flex hover:opacity-65"
-          onClick={() => router.push("/admin/services/this-uuid")}
-        >
-          <Image
-            src="https://www.apkmirror.com/wp-content/themes/APKMirror/ap_resize/ap_resize.php?src=https%3A%2F%2Fdownloadr2.apkmirror.com%2Fwp-content%2Fuploads%2F2022%2F11%2F43%2F637473239d8f6.png&w=96&h=96&q=100"
-            alt="img"
-            width={100}
-            height={100}
-            className="rounded object-cover h-20 w-20 flex-none"
-          />
-          <div>
-            <h3 className="txet-base font-semibold ml-3">Free Fire</h3>
-            <div className="inline-flex mt-2 gap-2 ml-3">
-              <Badge variant="outline" className="bg-green-400">
-                Active
-              </Badge>
+        {/* @ts-ignore */}
+        {getService.data?.data.map((item, index) => (
+          <div
+            key={item.id}
+            className="rounded-md bg-slate-100 shadow-sm p-3 inline-flex hover:opacity-65"
+            onClick={() => router.push(`/admin/services/${item.id}`)}
+          >
+            <Image
+              src={item.imgLogo}
+              alt="img"
+              width={100}
+              height={100}
+              className="rounded object-cover h-20 w-20 flex-none"
+            />
+            <div>
+              <h3 className="txet-base font-semibold ml-3">{item.name}</h3>
+              <div className="inline-flex mt-2 gap-2 ml-3">
+                <Badge
+                  variant="outline"
+                  className={cn({
+                    "bg-green-500": item.isAvailable,
+                    "bg-red-500": !item.isAvailable,
+                  })}
+                >
+                  {item.isAvailable ? "Available" : "Not Available"}
+                </Badge>
+              </div>
             </div>
           </div>
-        </div>
+        ))}
       </div>
     </>
   );
