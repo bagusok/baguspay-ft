@@ -23,7 +23,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import { redirect, useParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import { userTokenAtom } from "@/store";
 import { apiUrl } from "@/lib/constant";
@@ -37,11 +37,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
+import { cn, parseDate } from "@/lib/utils";
 import toast from "react-hot-toast";
 import InputFilePicker from "../../_file-picker/file-picker";
 import CreateProductGroup from "./create-product-group";
 import CreateProduct from "./create-product";
+import { DeleteDialog } from "@/components/ui/delete-dialog";
+import { AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import EditProduct from "./edit-product";
 
 export default function ServiceDetailPage() {
   const params = useParams();
@@ -64,10 +67,72 @@ export default function ServiceDetailPage() {
   const [openCreateProduct, setOpenCreateProduct] = useState(false);
   const [productGroupTabsActiveId, setProductGroupTabsActiveId] = useState("");
 
+  const [openEditProduct, setOpenEditProduct] = useState(false);
+  const [productActiveId, setProductActiveId] = useState("");
+
   const [inputFieldOneType, setInputFieldOneType] = useState("SELECT");
   const [inputFieldTwoType, setInputFieldTwoType] = useState("TEXT");
   const [inputFieldThreeType, setInputFieldThreeType] = useState("TEXT");
   const [serviceType, setServiceType] = useState("LAINNYA");
+
+  const [editIsAvailableId, setEditIsAvailableId] = useState<string>("");
+
+  const changeProductIsAvailable = useMutation({
+    mutationKey: ["changeProductIsAvailable"],
+    mutationFn: async (data: IChangeProductIsAvailable) => {
+      setEditIsAvailableId(data.id);
+      const res = await fetch(
+        `${apiUrl}/admin/products/update
+      `,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({
+            id: data.id,
+            isAvailable: !data.isAvailable,
+          }),
+        }
+      );
+      const resJson = await res.json();
+      if (resJson.statusCode == 200) {
+        toast.success("Success change product is available");
+        getServiceDetail.refetch();
+      } else {
+        toast.error("Failed change product is available");
+      }
+      setEditIsAvailableId("");
+    },
+  });
+
+  const deleteProduct = useMutation({
+    mutationKey: ["deleteProduct"],
+    mutationFn: async (productId: string) => {
+      const res = await fetch(
+        `${apiUrl}/admin/products/delete
+      `,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({
+            id: productId,
+          }),
+        }
+      );
+      const resJson = await res.json();
+      if (resJson.statusCode == 200) {
+        toast.success("Delete product success");
+        getServiceDetail.refetch();
+      } else {
+        toast.error("Failed delete");
+      }
+    },
+  });
 
   useEffect(() => {
     if (!params.servicesId) {
@@ -351,6 +416,7 @@ export default function ServiceDetailPage() {
                   placeholder="ID Number"
                   name="inputFieldOneLabel"
                   className="w-full"
+                  defaultValue={getServiceDetail.data.data.inputFieldOneLabel}
                 />
               </div>
             </div>
@@ -408,6 +474,7 @@ export default function ServiceDetailPage() {
                   name="inputFieldTwoLabel"
                   placeholder="ID Number"
                   className="w-full"
+                  defaultValue={getServiceDetail.data.data.inputFieldTwoLabel}
                 />
               </div>
             </div>
@@ -465,6 +532,7 @@ export default function ServiceDetailPage() {
                   name="inputFieldThreeLabel"
                   placeholder="ID Number"
                   className="w-full"
+                  defaultValue={getServiceDetail.data.data.inputFieldThreeLabel}
                 />
               </div>
             </div>
@@ -519,11 +587,12 @@ export default function ServiceDetailPage() {
                       <TableHead>Price From Provider</TableHead>
                       <TableHead>Profit</TableHead>
                       <TableHead>Is Available</TableHead>
-                      <TableHead className="text-right">Created At</TableHead>
+                      <TableHead>Created At</TableHead>
+                      <TableHead className="text-right">Action</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {item?.products?.map((product, _) => (
+                    {item?.products?.map((product: any, _: any) => (
                       <TableRow key={product.id}>
                         <TableCell className="">{product.id}</TableCell>
                         <TableCell className="">
@@ -536,23 +605,60 @@ export default function ServiceDetailPage() {
                         <TableCell className="">
                           {product.profitInPercent}% + {product.profit}
                         </TableCell>
-                        <TableCell>
-                          <Badge
-                            className={cn({
-                              "bg-green-500": product.isAvailable,
-                              "bg-red-500": !product.isAvailable,
-                            })}
+                        <TableCell className="w-fit">
+                          <button
+                            onClick={() =>
+                              changeProductIsAvailable.mutate(
+                                new IChangeProductIsAvailable(
+                                  product.id,
+                                  product.isAvailable
+                                )
+                              )
+                            }
+                            disabled={editIsAvailableId == product.id}
+                            id={product.id}
+                            className={cn(
+                              "w-full whitespace-nowrap text-xs rounded px-2.5 py-0.5 disabled:opacity-50 disabled:cursor-not-allowed",
+                              {
+                                "bg-green-500": product.isAvailable,
+                                "bg-red-500": !product.isAvailable,
+                              }
+                            )}
                           >
-                            {product.isAvailable
-                              ? "Available"
-                              : "Not Available"}
-                          </Badge>
+                            {product.id == editIsAvailableId && "Loading..."}
+                            {product.isAvailable &&
+                              product.id != editIsAvailableId &&
+                              "Available"}
+                            {!product.isAvailable &&
+                              product.id != editIsAvailableId &&
+                              "Not Available"}
+                          </button>
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="text-center">
                           {
                             // @ts-ignore
-                            new Date(product.createdAt).toLocaleDateString()
+                            parseDate(product.createdAt)
                           }
+                        </TableCell>
+                        <TableCell className="">
+                          <div className="inline-flex">
+                            <button
+                              className="text-xs bg-primary hover:opacity-60 rounded-md px-2.5 py-2 text-primary-foreground mr-3"
+                              onClick={() => {
+                                setProductActiveId(product.id);
+                                setOpenEditProduct(true);
+                              }}
+                            >
+                              Edit
+                            </button>
+                            <DeleteDialog
+                              onConfirm={() => deleteProduct.mutate(product.id)}
+                            >
+                              <AlertDialogTrigger className="text-xs bg-red-500 hover:opacity-60 rounded-md px-2.5 py-2 text-white">
+                                Delete
+                              </AlertDialogTrigger>
+                            </DeleteDialog>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -587,7 +693,24 @@ export default function ServiceDetailPage() {
           setOpenModal={setOpenCreateProduct}
           productGroupId={productGroupTabsActiveId}
         />
+
+        <EditProduct
+          refetch={getServiceDetail.refetch}
+          openModal={openEditProduct}
+          setOpenModal={setOpenEditProduct}
+          productId={productActiveId}
+        />
       </>
     );
+  }
+}
+
+class IChangeProductIsAvailable {
+  id: string;
+  isAvailable: boolean;
+
+  constructor(id: string, isAvailable: boolean) {
+    this.id = id;
+    this.isAvailable = isAvailable;
   }
 }
