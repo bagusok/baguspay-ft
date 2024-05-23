@@ -2,15 +2,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import {
   Table,
   TableBody,
   TableCaption,
@@ -20,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-export default function MyTransaction() {
+export default function TrackTransaction() {
   return (
     <section>
       <h2 className="text-xl font-bold text-center">Lacak Transaksi</h2>

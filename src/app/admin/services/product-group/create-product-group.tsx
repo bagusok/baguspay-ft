@@ -2,12 +2,21 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { axiosIn } from "@/lib/axios";
 import { apiUrl } from "@/lib/constant";
 import { userTokenAtom } from "@/store";
 import { Label } from "@radix-ui/react-label";
 import { useMutation } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
-import { FormEvent } from "react";
+import { FormEvent, useEffect } from "react";
 import toast from "react-hot-toast";
 
 export default function CreateProductGroup({
@@ -18,7 +27,7 @@ export default function CreateProductGroup({
 }: {
   openModal: boolean;
   setOpenModal: (openModal: boolean) => void;
-  serviceId: string;
+  serviceId?: string;
   refetch: () => void;
 }) {
   const userToken = useAtomValue(userTokenAtom);
@@ -29,32 +38,53 @@ export default function CreateProductGroup({
       e.preventDefault();
       const { productGroupName, desc, services } = e.target as any;
 
-      const response = await fetch(
+      console.log(productGroupName.value, desc.value, services.value);
+
+      const response = await axiosIn.post(
         `${apiUrl}/admin/product/product-group/create`,
         {
-          method: "POST",
+          name: productGroupName.value,
+          desc: desc.value,
+          region: "INDONESIA",
+          servicesId: services.value,
+        },
+        {
           headers: {
             Authorization: `Bearer ${userToken}`,
-            "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            name: productGroupName.value,
-            desc: desc.value,
-            region: "INDONESIA",
-            servicesId: services.value,
-          }),
         }
       );
-      const json = await response.json();
-      if (json.statusCode == 200) {
-        toast.success(json.message);
+
+      if (response.data.statusCode == 200) {
+        toast.success(response.data.message);
         refetch();
         setOpenModal(false);
       } else {
-        toast.error(json.message);
+        toast.error(response.data.message);
       }
     },
   });
+
+  const getServices = useMutation({
+    mutationKey: ["get-services"],
+    mutationFn: () =>
+      axiosIn
+        .get(`${apiUrl}/admin/services`, {
+          headers: {
+            authorization: `Bearer ${userToken}`,
+          },
+        })
+        .then((res) => res.data)
+        .catch((err) => toast.error(err)),
+  });
+
+  useEffect(() => {
+    if (openModal) {
+      getServices.mutate();
+    }
+
+    return () => getServices.reset();
+  }, [openModal]);
 
   if (!openModal) return null;
 
@@ -76,6 +106,15 @@ export default function CreateProductGroup({
             className="flex flex-col gap-3 mt-4"
           >
             <div>
+              <Label htmlFor="name">Icon</Label>
+              <Input
+                type="text"
+                name="productGroupIcon"
+                placeholder="Weekly Pass"
+                required
+              />
+            </div>
+            <div>
               <Label htmlFor="name">Name</Label>
               <Input
                 type="text"
@@ -93,14 +132,26 @@ export default function CreateProductGroup({
               />
             </div>
             <div>
-              <Label htmlFor="services">ID Service</Label>
-              <Input
-                type="text"
+              <Label htmlFor="services">Service</Label>
+              <Select
                 name="services"
-                placeholder="Weekly Pass"
-                value={serviceId}
-                readOnly
-              />
+                defaultValue={serviceId}
+                disabled={serviceId ? true : false}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select service" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {getServices.isSuccess &&
+                      getServices.data?.data?.map((item: any) => (
+                        <SelectItem key={item.id} value={item.id}>
+                          {item.name}
+                        </SelectItem>
+                      ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
             <div className="inline-flex gap-3 self-end mt-2">
               <Button

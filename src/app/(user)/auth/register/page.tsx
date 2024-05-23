@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { axiosIn } from "@/lib/axios";
 import { apiUrl } from "@/lib/constant";
 import { userTokenAtom } from "@/store";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
@@ -34,31 +35,23 @@ export default function RegisterPage() {
       return toast.error("Password and confirm password must be same");
     }
 
-    const register = await fetch(`${apiUrl}/auth/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    try {
+      const login = await axiosIn.post(`${apiUrl}/auth/register`, {
         longName: e.currentTarget.longName.value,
         username: e.currentTarget.username.value,
         email: e.currentTarget.email.value,
         phone: e.currentTarget.phone.value,
         password: e.currentTarget.password.value,
-      }),
-    });
+      });
 
-    try {
-      const registerResponse = await register.json();
-      if (registerResponse.statusCode === 200) {
-        toast.success(registerResponse.message);
-        return router.push("/auth/login");
+      if (login?.data.statusCode === 200) {
+        toast.success("Register success");
+        router.push("/auth/login");
       } else {
-        toast.error(registerResponse.message);
+        toast.error("Login failed");
       }
-    } catch (err) {
-      console.log(err);
-      toast.error("Something went wrong");
+    } catch (error: any) {
+      toast.error(error.response.data.message);
     }
 
     setIsLoading(false);
