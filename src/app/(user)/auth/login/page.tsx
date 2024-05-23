@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { axiosIn } from "@/lib/axios";
 import { apiUrl } from "@/lib/constant";
 import { userTokenAtom } from "@/store";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
@@ -27,28 +28,21 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
 
-    const login = await fetch(`${apiUrl}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    try {
+      const login = await axiosIn.post(`${apiUrl}/auth/login`, {
         email: e.currentTarget.email.value,
         password: e.currentTarget.password.value,
-      }),
-    });
+      });
 
-    try {
-      const loginResponse = await login.json();
-      if (loginResponse.statusCode === 200) {
-        setUserToken(loginResponse.data.token);
-        toast.success(loginResponse.message);
+      if (login?.data.statusCode === 200) {
+        setUserToken(login.data.data.token);
+        toast.success("Login success");
+        router.push("/");
       } else {
-        toast.error(loginResponse.message);
+        toast.error("Login failed");
       }
-    } catch (err) {
-      console.log(err);
-      toast.error("Something went wrong");
+    } catch (error: any) {
+      toast.error(error.response.data.message);
     }
 
     setIsLoading(false);

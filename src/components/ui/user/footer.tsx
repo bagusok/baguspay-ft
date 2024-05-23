@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function UserFooter() {
   return (
-    <div className="bg-background mt-20 pt-5 pb-24 md:pb-3 w-full">
+    <div className="bg-background mt-20 pt-5 pb-24 md:pb-3 w-full px-2">
       <div className="flex flex-col md:flex-row md:gap-10 md:justify-between">
         <div
           id="footer-info"

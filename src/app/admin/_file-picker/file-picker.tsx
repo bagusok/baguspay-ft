@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useQueryWithToken } from "@/hooks/useQuery";
 import { apiUrl } from "@/lib/constant";
 import { cn } from "@/lib/utils";
 import { userTokenAtom } from "@/store";
@@ -17,11 +16,13 @@ function FilePicker({
   setOpenFile,
   onFileSelect,
   selectedFile,
+  className,
 }: {
   openFile: boolean;
   setOpenFile: (openFile: boolean) => void;
   onFileSelect: (file: string) => void;
   selectedFile: string;
+  className?: string;
 }) {
   const userToken = useAtomValue(userTokenAtom);
   const [selectedFileId, setSelectedFileId] = useState("");
@@ -31,7 +32,15 @@ function FilePicker({
     error,
     isLoading,
     refetch: refetchFilePicker,
-  } = useQueryWithToken(["filepicker"], `${apiUrl}/admin/file-picker/list`);
+  } = useQuery({
+    queryKey: ["get-file"],
+    queryFn: () =>
+      fetch(`${apiUrl}/admin/file-picker/list`, {
+        headers: {
+          authorization: `Bearer ${userToken}`,
+        },
+      }).then((res) => res.json()),
+  });
 
   const uploadFile = useMutation({
     mutationKey: ["filepicker-upload"],
@@ -82,7 +91,7 @@ function FilePicker({
 
   return (
     <div
-      className="fixed z-50 top-0 right-0 left-0 bottom-0  bg-black/60 inline-flex justify-center items-center p-8"
+      className={`fixed z-50 top-0 right-0 left-0 bottom-0  bg-black/60 inline-flex justify-center items-center p-8 ${className}`}
       onClick={() => setOpenFile(false)}
     >
       <div
@@ -136,7 +145,7 @@ function FilePicker({
                   />
                   <label
                     // @ts-ignore
-                    for={file.key}
+                    htmlFor={file.key}
                     className="inline-flex items-center justify-between w-full p-1 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer   peer-checked:border-primary peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100"
                   >
                     <Image
@@ -193,15 +202,24 @@ function FilePicker({
 export default function InputFilePicker({
   name,
   defaultValue,
+  className,
+  onChange,
 }: {
   name: string;
   defaultValue?: string;
+  className?: string;
+  onChange?: (e: { value: string }) => void;
 }) {
   const [openFile, setOpenFile] = useState(false);
   const [_selectedFiles, _setSelectedFiles] = useState("");
 
   const onFileSelect = (file: string) => {
     _setSelectedFiles(file);
+    if (onChange) {
+      onChange({
+        value: file,
+      });
+    }
   };
 
   useEffect(() => {
@@ -214,7 +232,7 @@ export default function InputFilePicker({
     <>
       {!_selectedFiles && (
         <div
-          className="w-full h-28 rounded-md inline-flex justify-center items-center border border-dashed border-muted-foreground hover:opacity-60 p-3"
+          className={`rounded-md inline-flex justify-center items-center border border-dashed border-muted-foreground hover:opacity-60 p-3 ${className}`}
           onClick={() => setOpenFile(true)}
         >
           <p className="text-sm text-center">Upload File Here</p>
@@ -230,7 +248,7 @@ export default function InputFilePicker({
           alt="img"
           width={100}
           height={100}
-          className="w-full max-h-40 rounded-md object-cover"
+          className={`rounded-md object-cover ${className}`}
         />
       )}
 

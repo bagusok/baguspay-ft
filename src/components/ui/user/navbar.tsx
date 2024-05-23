@@ -3,7 +3,7 @@
 import { useWindowSize } from "@/hooks/useWindowSize";
 import { INavbarItem } from "@/lib/data/navbar.data";
 import { cn } from "@/lib/utils";
-import { isSidebarOpen, themeAtom } from "@/store";
+import { isSidebarOpen, themeAtom, userAtom } from "@/store";
 import { Menu } from "@headlessui/react";
 import {
   CaretDownIcon,
@@ -12,8 +12,9 @@ import {
   SunIcon,
   TokensIcon,
 } from "@radix-ui/react-icons";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Fragment } from "react";
 import { HiOutlineBell } from "react-icons/hi2";
 
@@ -25,6 +26,8 @@ export default function UserNavbar({
   const isMobile = useWindowSize().width < 768;
   const openSidebar = useSetAtom(isSidebarOpen);
   const [theme, setTheme] = useAtom(themeAtom);
+  const user = useAtomValue(userAtom);
+  const router = useRouter();
 
   return (
     <>
@@ -51,7 +54,14 @@ export default function UserNavbar({
               if (item.child && item.isHaveChild) {
                 return (
                   <Menu key={index} className="" as="div">
-                    <Menu.Button className="hover:text-primary inline-flex items-center text-base">
+                    <Menu.Button
+                      className="hover:text-primary inline-flex items-center text-base hover:opacity-75"
+                      onClick={() => {
+                        if (!item.isHaveChild) {
+                          router.push(item.url);
+                        }
+                      }}
+                    >
                       {item.title}
                       <CaretDownIcon className="ui-open:rotate-180 transition-all duration-100 ml-2" />
                     </Menu.Button>
@@ -90,6 +100,73 @@ export default function UserNavbar({
                 );
               }
             })}
+
+          {!user.data && !user.isLoading && (
+            <Menu className="hidden md:block" as="div">
+              <Menu.Button
+                className="inline-flex justify-center items-center px-3 h-7 text-sm rounded-sm bg-primary text-primary-foreground hover:opacity-75"
+                onClick={() => router.push("/auth/login")}
+              >
+                Login
+              </Menu.Button>
+              <Menu.Button
+                className="inline-flex justify-center items-center px-3 h-7 text-sm rounded-sm border border-primary text-primary hover:opacity-75 ml-3"
+                onClick={() => router.push("/auth/register")}
+              >
+                Register
+              </Menu.Button>
+            </Menu>
+          )}
+
+          {user.data && (
+            <Menu className="hidden md:block" as="div">
+              <Menu.Button className="hover:text-primary inline-flex items-center text-base">
+                My Account
+                <CaretDownIcon className="ui-open:rotate-180 transition-all duration-100 ml-2" />
+              </Menu.Button>
+              <Menu.Items className="absolute flex flex-col bg-card py-2 px-6 rounded shadow text-sm gap-2 top-16 z-30">
+                <Menu.Item as={Fragment}>
+                  {({ active }: { active: boolean }) => (
+                    <Link
+                      href="/profile"
+                      className={cn("hover:text-primary", {
+                        underline: active,
+                      })}
+                      passHref
+                    >
+                      Profile
+                    </Link>
+                  )}
+                </Menu.Item>
+                <Menu.Item as={Fragment}>
+                  {({ active }: { active: boolean }) => (
+                    <Link
+                      href="/settings"
+                      className={cn("hover:text-primary", {
+                        underline: active,
+                      })}
+                      passHref
+                    >
+                      Settings
+                    </Link>
+                  )}
+                </Menu.Item>
+                <Menu.Item as={Fragment}>
+                  {({ active }: { active: boolean }) => (
+                    <Link
+                      href="/auth/logout"
+                      className={cn("hover:text-primary", {
+                        underline: active,
+                      })}
+                      passHref
+                    >
+                      Logout
+                    </Link>
+                  )}
+                </Menu.Item>
+              </Menu.Items>
+            </Menu>
+          )}
 
           <HiOutlineBell className="scale-125 ml-4" />
           <MagnifyingGlassIcon className="scale-150" />

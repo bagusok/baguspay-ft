@@ -13,13 +13,13 @@ const navbarItems: INavbarItem[] = [
     child: [
       {
         id: 3,
-        title: "My Transactions",
-        url: "/my-transactions",
+        title: "History Transaksi",
+        url: "/transaction/history",
       },
       {
         id: 4,
-        title: "Check Transactions by ID",
-        url: "/track-transaction",
+        title: "Check Transaksi",
+        url: "/transaction/track",
       },
     ],
   },
@@ -43,24 +43,6 @@ const navbarItems: INavbarItem[] = [
         id: 8,
         title: "HP Zodiac",
         url: "/tools/hp-zodiac",
-      },
-    ],
-  },
-  {
-    id: 9,
-    title: "My Account",
-    url: "/my-account",
-    isHaveChild: true,
-    child: [
-      {
-        id: 10,
-        title: "Login",
-        url: "/auth/login",
-      },
-      {
-        id: 10,
-        title: "Register",
-        url: "/auth/register",
       },
     ],
   },
@@ -98,13 +80,13 @@ export const sidebarAdmin: INavbarItem[] = [
       },
       {
         id: 4,
-        title: "Service Group",
+        title: "List Service Group",
         url: "/admin/services/group",
       },
       {
         id: 4,
-        title: "Add Service",
-        url: "/admin/services/add",
+        title: "List Product Group",
+        url: "/admin/services/product-group",
       },
       {
         id: 3,

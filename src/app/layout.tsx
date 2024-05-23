@@ -1,10 +1,12 @@
 "use client";
 
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import "./globals.css";
-import { themeAtom } from "@/store";
+import { deviceIdAtom, themeAtom } from "@/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
+import { useEffect } from "react";
+import { generateDeviceId } from "@/lib/utils";
 
 export default function RootLayout({
   children,
@@ -12,7 +14,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const theme = useAtomValue(themeAtom);
+  const [deviceId, setDeviceId] = useAtom(deviceIdAtom);
   const queryClient = new QueryClient();
+
+  useEffect(() => {
+    if (!deviceId) {
+      setDeviceId(generateDeviceId());
+    }
+  }, []);
 
   return (
     <html lang="en">

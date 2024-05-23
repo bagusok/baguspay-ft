@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { axiosIn } from "@/lib/axios";
 
 export default function CreateProduct({
   productGroupId,
@@ -34,33 +35,26 @@ export default function CreateProduct({
   refetch: () => void;
 }) {
   const userToken = useAtomValue(userTokenAtom);
-  // const [_productGroupId, _setProductGroupId] = useState("");
-
-  // useEffect(() => {
-  //   _setProductGroupId(productGroupId);
-  //   console.log("anjing-");
-  // }, [productGroupId]);
 
   const saveServiceGroup = useMutation({
     mutationKey: ["service-group-save"],
-    mutationFn: async (value: any) => {
-      console.log(value);
+    mutationFn: async (data: any) => {
+      const response = await axiosIn.post(
+        `${apiUrl}/admin/products/create`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
 
-      const response = await fetch(`${apiUrl}/admin/products/create`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(value),
-      });
-      const json = await response.json();
-      if (json.statusCode == 200) {
-        toast.success(json.message);
+      if (response.data.statusCode == 200) {
+        toast.success(response.data.message);
         refetch();
         setOpenModal(false);
       } else {
-        toast.error(json.message);
+        toast.error(response.data.message);
       }
     },
   });

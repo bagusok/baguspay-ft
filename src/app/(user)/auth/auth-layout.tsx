@@ -1,14 +1,15 @@
 "use client";
 
 import { userAtom, userTokenAtom } from "@/store";
+import { UserPermission } from "@/types/UserPermission";
 import { useAtomValue, useSetAtom } from "jotai";
-import { useRouter } from "next/navigation";
+import { redirect, RedirectType, useRouter } from "next/navigation";
 
 export default function AuthLayout({
-  roles = ["USER"],
+  roles = [UserPermission.USER],
   children,
 }: {
-  roles?: UserPermission[];
+  roles: UserPermission[];
   children: React.ReactNode;
 }) {
   const getUser = useAtomValue(userAtom);
@@ -33,10 +34,12 @@ export default function AuthLayout({
 
   if (!getUser.data) {
     setUserToken(null);
-    router.push("/auth/login");
+    return redirect("/auth/login", RedirectType.push);
   }
 
-  if (roles?.includes(getUser!.data?.role ?? null)) {
+  console.log(getUser.data.role, roles);
+
+  if (roles.includes(getUser!.data!.role)) {
     return children as JSX.Element;
   } else {
     return (
@@ -46,5 +49,3 @@ export default function AuthLayout({
     );
   }
 }
-
-type UserPermission = "ADMIN" | "USER" | null;

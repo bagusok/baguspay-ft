@@ -8,7 +8,7 @@ export default function OrderLayout({
   return <>{children}</>;
 }
 
-export const metadata: Metadata = {
-  title: "Order Free Fire",
-  description: "Order",
-};
+// export const metadata: Metadata = {
+//   title: "Order Free Fire",
+//   description: "Order",
+// };

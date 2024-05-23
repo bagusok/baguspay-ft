@@ -21,30 +21,30 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { redirect, useParams } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import { userTokenAtom } from "@/store";
 import { apiUrl } from "@/lib/constant";
 import { Switch } from "@/components/ui/switch";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn, parseDate } from "@/lib/utils";
 import toast from "react-hot-toast";
 import InputFilePicker from "../../_file-picker/file-picker";
-import CreateProductGroup from "./create-product-group";
-import CreateProduct from "./create-product";
+import CreateProductGroup from "../product-group/create-product-group";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import EditProduct from "./edit-product";
+import EditProduct from "../products/edit-product";
+import CreateProduct from "../products/create-product";
+import EditProductGroup from "../product-group/edit-product-group";
+import Select from "react-select";
+import {
+  dataInputIdType,
+  dataServiceType,
+  IDataSelectType,
+} from "@/lib/data/select.data";
+import { axiosIn } from "@/lib/axios";
 
 export default function ServiceDetailPage() {
   const params = useParams();
@@ -52,14 +52,17 @@ export default function ServiceDetailPage() {
   const userToken = useAtomValue(userTokenAtom);
 
   const getServiceDetail = useQuery({
-    queryKey: ["getServiceDetail", params.servicesId, userToken],
+    queryKey: ["getServiceDetail", params.servicesId],
     queryFn: async () => {
-      const res = await fetch(`${apiUrl}/services/${params.servicesId}`, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
-      return res.json();
+      const res = await axiosIn.get(
+        `${apiUrl}/admin/services/${params.servicesId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+      return res.data;
     },
   });
 
@@ -70,10 +73,9 @@ export default function ServiceDetailPage() {
   const [openEditProduct, setOpenEditProduct] = useState(false);
   const [productActiveId, setProductActiveId] = useState("");
 
-  const [inputFieldOneType, setInputFieldOneType] = useState("SELECT");
-  const [inputFieldTwoType, setInputFieldTwoType] = useState("TEXT");
-  const [inputFieldThreeType, setInputFieldThreeType] = useState("TEXT");
-  const [serviceType, setServiceType] = useState("LAINNYA");
+  const [inputFieldOneType, setInputFieldOneType] = useState();
+  const [inputFieldTwoType, setInputFieldTwoType] = useState();
+  const [inputFieldThreeType, setInputFieldThreeType] = useState();
 
   const [editIsAvailableId, setEditIsAvailableId] = useState<string>("");
 
@@ -81,23 +83,21 @@ export default function ServiceDetailPage() {
     mutationKey: ["changeProductIsAvailable"],
     mutationFn: async (data: IChangeProductIsAvailable) => {
       setEditIsAvailableId(data.id);
-      const res = await fetch(
+      const res = await axiosIn.post(
         `${apiUrl}/admin/products/update
       `,
         {
-          method: "POST",
+          id: data.id,
+          isAvailable: !data.isAvailable,
+        },
+        {
           headers: {
             Authorization: `Bearer ${userToken}`,
-            "content-type": "application/json",
           },
-          body: JSON.stringify({
-            id: data.id,
-            isAvailable: !data.isAvailable,
-          }),
         }
       );
-      const resJson = await res.json();
-      if (resJson.statusCode == 200) {
+
+      if (res.data.data.statusCode == 200) {
         toast.success("Success change product is available");
         getServiceDetail.refetch();
       } else {
@@ -110,22 +110,20 @@ export default function ServiceDetailPage() {
   const deleteProduct = useMutation({
     mutationKey: ["deleteProduct"],
     mutationFn: async (productId: string) => {
-      const res = await fetch(
+      const res = await axiosIn.post(
         `${apiUrl}/admin/products/delete
       `,
         {
-          method: "POST",
+          id: productId,
+        },
+        {
           headers: {
             Authorization: `Bearer ${userToken}`,
-            "content-type": "application/json",
           },
-          body: JSON.stringify({
-            id: productId,
-          }),
         }
       );
-      const resJson = await res.json();
-      if (resJson.statusCode == 200) {
+
+      if (res.data.data.statusCode == 200) {
         toast.success("Delete product success");
         getServiceDetail.refetch();
       } else {
@@ -143,7 +141,6 @@ export default function ServiceDetailPage() {
       setInputFieldOneType(getServiceDetail.data?.data.inputFieldOneType);
       setInputFieldTwoType(getServiceDetail.data?.data.inputFieldTwoType);
       setInputFieldThreeType(getServiceDetail.data?.data.inputFieldThreeType);
-      setServiceType(getServiceDetail.data?.data.type);
 
       if (productGroupTabsActiveId == "") {
         setProductGroupTabsActiveId(
@@ -151,6 +148,12 @@ export default function ServiceDetailPage() {
         );
       }
     }
+  }, [getServiceDetail.data]);
+
+  const indexDataServiceType = useMemo(() => {
+    return dataServiceType.findIndex(
+      (item) => item.value == getServiceDetail?.data?.data?.type
+    );
   }, [getServiceDetail.data]);
 
   const saveService = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -181,9 +184,7 @@ export default function ServiceDetailPage() {
       imgBanner,
     } = e.target as any;
 
-    console.log({ isAvailable });
-
-    const save = await fetch(`${apiUrl}/services/update`, {
+    const save = await fetch(`${apiUrl}/admin/services/update`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${userToken}`,
@@ -259,23 +260,24 @@ export default function ServiceDetailPage() {
             <div>
               <Label>Banner Image</Label>
               <InputFilePicker
+                className="w-full h-28"
                 name="imgBanner"
-                defaultValue={getServiceDetail?.data?.data?.imgLogo}
+                defaultValue={getServiceDetail?.data?.data?.imgBanner}
               />
             </div>
             <div className="inline-flex w-full gap-8">
-              <div className="mt-3 w-24 ">
+              <div className="mt-3">
                 <Label>Logo Image</Label>
                 <InputFilePicker
                   name="imgLogo"
+                  className="w-24 h-28"
                   defaultValue={getServiceDetail?.data?.data?.imgLogo}
                 />
               </div>
-              <div className="mt-4 w-24 ">
+              <div className="mt-4 w-24">
                 <Label>Is Available</Label>
                 <Switch
                   defaultChecked={getServiceDetail.data.data.isAvailable}
-                  onCheckedChange={(value) => console.log(value)}
                   className="mt-5"
                   name="isAvailable"
                 />
@@ -301,35 +303,20 @@ export default function ServiceDetailPage() {
             </div>
             <div className="w-full">
               <Label>Publisher Game</Label>
-              <Input name="publisher" placeholder="Garena" className="w-full" />
+              <Input
+                name="publisher"
+                placeholder="Garena"
+                className="w-full"
+                defaultValue={getServiceDetail.data?.data.publisher}
+              />
             </div>
             <div className="w-full">
               <Label>Type</Label>
               <Select
+                options={dataServiceType}
                 name="type"
-                defaultValue={getServiceDetail.data.data.type}
-                onValueChange={(value) => {
-                  setServiceType(value);
-                }}
-                value={serviceType}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="GAME_DIRECT">GAME DIRECT</SelectItem>
-                    <SelectItem value="GAME_VOUCHER">GAME VOUCHER</SelectItem>
-                    <SelectItem value="TAGIHAN">TAGIHAN</SelectItem>
-                    <SelectItem value="PULSA">PULSA</SelectItem>
-                    <SelectItem value="PAKET_DATA">PAKET DATA</SelectItem>
-                    <SelectItem value="E_MONEY">E MONEY</SelectItem>
-                    <SelectItem value="AKUN_PREMIUM">AKUN PREMIUM</SelectItem>
-                    <SelectItem value="SMM">SMM</SelectItem>
-                    <SelectItem value="LAINNYA">LAINNYA</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+                defaultValue={dataServiceType[indexDataServiceType]}
+              />
             </div>
             <div className="w-full">
               <Label>Description</Label>
@@ -376,24 +363,14 @@ export default function ServiceDetailPage() {
               <div className="mt-3">
                 <Label>Type Input</Label>
                 <Select
+                  options={dataInputIdType}
                   name="inputFieldOneType"
-                  defaultValue={getServiceDetail.data.data.inputFieldOneType}
-                  onValueChange={(value) => {
-                    setInputFieldOneType(value);
+                  defaultValue={{
+                    value: getServiceDetail?.data?.data?.inputFieldOneType,
+                    label: getServiceDetail?.data?.data?.inputFieldOneType,
                   }}
-                  value={inputFieldOneType}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="TEXT">TEXT</SelectItem>
-                      <SelectItem value="NUMBER">NUMBER</SelectItem>
-                      <SelectItem value="SELECT">SELECT</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                  onChange={(e) => setInputFieldOneType(e?.value)}
+                />
               </div>
               {
                 // @ts-ignore
@@ -434,24 +411,14 @@ export default function ServiceDetailPage() {
               <div className="mt-3">
                 <Label>Type Input</Label>
                 <Select
+                  options={dataInputIdType}
                   name="inputFieldTwoType"
-                  defaultValue={getServiceDetail.data.data.inputFieldTwoType}
-                  onValueChange={(value) => {
-                    setInputFieldTwoType(value);
+                  defaultValue={{
+                    value: getServiceDetail?.data?.data?.inputFieldTwoType,
+                    label: getServiceDetail?.data?.data?.inputFieldTwoType,
                   }}
-                  value={inputFieldTwoType}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="TEXT">TEXT</SelectItem>
-                      <SelectItem value="NUMBER">NUMBER</SelectItem>
-                      <SelectItem value="SELECT">SELECT</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                  onChange={(e) => setInputFieldOneType(e?.value)}
+                />
               </div>
               {
                 // @ts-ignore
@@ -492,24 +459,14 @@ export default function ServiceDetailPage() {
               <div className="mt-3">
                 <Label>Type Input</Label>
                 <Select
+                  options={dataInputIdType}
                   name="inputFieldThreeType"
-                  defaultValue={getServiceDetail.data.data.inputFieldThreeType}
-                  onValueChange={(value) => {
-                    setInputFieldThreeType(value);
+                  defaultValue={{
+                    value: getServiceDetail?.data?.data?.inputFieldThreeType,
+                    label: getServiceDetail?.data?.data?.inputFieldThreeType,
                   }}
-                  value={inputFieldTwoType}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="TEXT">TEXT</SelectItem>
-                      <SelectItem value="NUMBER">NUMBER</SelectItem>
-                      <SelectItem value="SELECT">SELECT</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                  onChange={(e) => setInputFieldOneType(e?.value)}
+                />
               </div>
               {
                 // @ts-ignore

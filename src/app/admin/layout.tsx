@@ -1,3 +1,4 @@
+import { UserPermission } from "@/types/UserPermission";
 import AuthLayout from "../(user)/auth/auth-layout";
 import ButtonOpenSidebarAdmin from "./ButtonOpenSidebar";
 import SidebarAdmin from "./sidebar-admin";
@@ -9,7 +10,7 @@ export default function UserLayout({
 }) {
   return (
     <main className="flex flex-row relative">
-      <AuthLayout roles={["ADMIN"]}>
+      <AuthLayout roles={[UserPermission.ADMIN]}>
         <SidebarAdmin />
         <section className="w-full px-4 md:px-10">
           <header className="w-full h-16 inline-flex justify-between items-center mb-5">

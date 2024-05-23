@@ -1,12 +1,14 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { axiosIn } from "@/lib/axios";
 import { apiUrl } from "@/lib/constant";
 import { cn } from "@/lib/utils";
 import { userTokenAtom } from "@/store";
 import { useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function AdminServices() {
@@ -15,17 +17,26 @@ export default function AdminServices() {
   const getService = useQuery({
     queryKey: ["getService", userToken],
     queryFn: async () => {
-      const res = await fetch(`${apiUrl}/services`, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
-      return res.json();
+      return axiosIn
+        .get(`${apiUrl}/admin/services`, {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        })
+        .then((res) => res.data);
     },
   });
 
   return (
     <>
+      <div className="mb-4 w-full inline-flex justify-end">
+        <Link
+          href="/admin/services/create-service"
+          className="px-5 py-2 bg-primary text-primary-foreground text-sm rounded-md hover:opacity-75"
+        >
+          Add Service
+        </Link>
+      </div>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
         {/* @ts-ignore */}
         {getService.data?.data.map((item, index) => (

@@ -21,6 +21,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useEffect } from "react";
+import { axiosIn } from "@/lib/axios";
 
 export default function EditProduct({
   productId,
@@ -38,43 +39,39 @@ export default function EditProduct({
   const getProductDetail = useMutation({
     mutationKey: ["get-product-detail"],
     mutationFn: async () => {
-      const response = await fetch(`${apiUrl}/admin/products/${productId}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-      const json = await response.json();
-      if (json.statusCode == 200) {
-        return json.data;
-      } else {
-        toast.error(json.message);
-      }
+      return axiosIn
+        .get(`${apiUrl}/admin/products/${productId}`, {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        })
+        .then((res) => res.data.data)
+        .catch((err) => console.log(err));
     },
   });
 
   const saveServiceGroup = useMutation({
     mutationKey: ["edit-product"],
     mutationFn: async (value: any) => {
-      const response = await fetch(`${apiUrl}/admin/products/update`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const response = await axiosIn.post(
+        `${apiUrl}/admin/products/update`,
+        {
           id: productId,
           ...value,
-        }),
-      });
-      const json = await response.json();
-      if (json.statusCode == 200) {
-        toast.success(json.message);
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+
+      if (response.data.statusCode == 200) {
+        toast.success(response.data.message);
         refetch();
         setOpenModal(false);
       } else {
-        toast.error(json.message);
+        toast.error(response.data.message);
       }
     },
   });
