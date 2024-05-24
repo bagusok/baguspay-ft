@@ -18,7 +18,7 @@ export default function AuthLayout({
 
   if (getUser.isLoading) {
     return (
-      <div className="w-full h-dvh inline-flex justify-center items-center">
+      <div className="w-dvw h-dvh inline-flex justify-center items-center">
         <h2 className="text-xl font-semibold">Loading...</h2>
       </div>
     );

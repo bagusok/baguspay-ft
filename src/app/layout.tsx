@@ -28,7 +28,9 @@ export default function RootLayout({
     <html lang="en">
       <QueryClientProvider client={queryClient}>
         <body
-          className={theme + " h-full relative overflow-x-hidden box-border"}
+          className={
+            theme + " w-dvw h-full relative overflow-x-hidden box-border"
+          }
         >
           <NextTopLoader showSpinner={false} />
           <Toaster position="top-right" reverseOrder={false} />

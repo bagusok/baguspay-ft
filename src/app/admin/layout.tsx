@@ -9,7 +9,7 @@ export default function UserLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="lg:grid lg:grid-cols-10">
+    <main className="w-full lg:grid lg:grid-cols-10">
       <AuthLayout roles={[UserPermission.ADMIN]}>
         <SidebarAdmin />
         <section className="col-span-8 w-full px-4 md:px-10">
