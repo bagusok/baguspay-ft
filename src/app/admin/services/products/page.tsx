@@ -265,11 +265,11 @@ export default function AdminProducts() {
   };
 
   return (
-    <section>
+    <section className="w-full box-border overflow-hidden">
       <h2 className="text-base font-bold">List Product Group</h2>
       <div className="inline-flex justify-between w-full mt-5">
         <form
-          className="lg:w-2/3"
+          className="w-60"
           onSubmit={(e) => {
             console.log("pree");
             e.preventDefault();

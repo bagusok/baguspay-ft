@@ -319,7 +319,7 @@ export default function AdminPaymentsPage() {
         setOpenModal={setOpenModalEditPayment}
         refetch={getPaymentMethods.refetch}
       />
-      <div className="min-h-dvh">
+      <div className="min-h-dvh w-full">
         <div className="flex justify-between items-center">
           <h1 className="text-xl font-bold">Payments</h1>
           <button

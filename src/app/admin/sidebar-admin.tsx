@@ -24,7 +24,7 @@ export default function SidebarAdmin() {
     <section
       id="sidebar"
       className={cn(
-        "flex-none md:w-72 h-dvh bg-slate-100 dark:bg-card left-0 right-0 lg:sticky lg:top-0 flex flex-col gap-3 px-3 py-5 overflow-y-auto top-0 transition-all ease-in-out duration-300 z-20",
+        "col-span-2  md:w-72 lg:w-full h-dvh bg-slate-100 dark:bg-card left-0 right-0 lg:sticky lg:top-0 flex flex-col gap-3 px-3 py-5 overflow-y-auto top-0 transition-all ease-in-out duration-300 z-20",
         {
           "-translate-x-0 fixed": isSidebarOpen,
           "-translate-x-full lg:translate-x-0 absolute": isSidebarOpen == false,

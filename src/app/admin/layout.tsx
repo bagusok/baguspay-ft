@@ -9,10 +9,10 @@ export default function UserLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="flex flex-row relative">
+    <main className="lg:grid lg:grid-cols-10">
       <AuthLayout roles={[UserPermission.ADMIN]}>
         <SidebarAdmin />
-        <section className="w-full px-4 md:px-10">
+        <section className="col-span-8 w-full px-4 md:px-10">
           <header className="w-full h-16 inline-flex justify-between items-center mb-5">
             <ButtonOpenSidebarAdmin />
             <h1 className="text-lg font-bold">BagusPay</h1>

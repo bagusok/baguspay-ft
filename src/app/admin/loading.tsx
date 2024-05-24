@@ -1,9 +1,18 @@
+"use client";
+import { Player, Controls } from "@lottiefiles/react-lottie-player";
+
 export default function Loading() {
   return (
     <>
       <div className="w-full h-screen flex justify-center items-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-        <h1>Loadinggggg</h1>
+        <Player
+          autoplay
+          loop
+          src="/assets/lottie/loading.json"
+          style={{ height: "100px", width: "100px" }}
+        >
+          <Controls visible={false} />
+        </Player>
       </div>
     </>
   );
