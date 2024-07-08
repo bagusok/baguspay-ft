@@ -13,7 +13,7 @@ import {
 
 export default function TrackTransaction() {
   return (
-    <section>
+    <section className="px-4">
       <h2 className="text-xl font-bold text-center">Lacak Transaksi</h2>
       <form action="" className="w-full flex flex-col items-center gap-4 mt-8">
         <Input className="h-12 md:max-w-[40rem]" />

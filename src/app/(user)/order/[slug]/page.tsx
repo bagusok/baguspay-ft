@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Data, ServiceResponse } from "./service-response.type";
 import { Metadata } from "next";
 import { generateSignature } from "@/lib/utils";
+import ClientCheckTagihanPage from "./client-check-tagihan";
 
 export default async function OrderPage({
   params,
@@ -15,7 +16,11 @@ export default async function OrderPage({
   const getData = await getDataService(params.slug);
   // console.log("paamss", getData);
   await generateMetadata({ params });
-  return <ClientOrderPage data={getData!.data as Data} />;
+  if ((getData!.data as Data).type == "TAGIHAN") {
+    return <ClientCheckTagihanPage data={getData!.data as Data} />;
+  } else {
+    return <ClientOrderPage data={getData!.data as Data} />;
+  }
 }
 
 const getDataService = async (slug: string) => {

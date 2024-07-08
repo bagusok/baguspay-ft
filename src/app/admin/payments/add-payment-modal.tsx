@@ -51,7 +51,7 @@ export default function AdminAddPaymentModal({
         }
       );
 
-      if (response.data.data.statusCode == 200) {
+      if (response.data.statusCode == 200) {
         toast.success(response.data.message);
         refetch();
         setOpenModal(false);
@@ -60,6 +60,11 @@ export default function AdminAddPaymentModal({
       }
     },
   });
+
+  const dataPaymentAllowFor = [
+    { value: "DEPOSIT", label: "Deposit" },
+    { value: "TRANSACTION", label: "Transaction" },
+  ];
 
   if (!openModal) return null;
 
@@ -91,6 +96,7 @@ export default function AdminAddPaymentModal({
                 maxAmount: 0,
                 cutOffStart: "",
                 cutOffEnd: "",
+                paymentAllowAccess: ["TRANSACTION"],
               }}
             >
               {({ values, handleChange, handleSubmit, setFieldValue }) => (
@@ -266,6 +272,31 @@ export default function AdminAddPaymentModal({
                         onChange={handleChange}
                       />
                     </div>
+                  </div>
+                  <div>
+                    <Label className="text-sm" htmlFor="name">
+                      Payment Allow For
+                    </Label>
+                    <Select
+                      name="paymentAllowAccess"
+                      isMulti
+                      defaultValue={dataPaymentAllowFor[1]}
+                      options={dataPaymentAllowFor}
+                      onChange={(e) => {
+                        setFieldValue(
+                          "paymentAllowAccess",
+                          e.map((a: any) => a.value)
+                        );
+                      }}
+                      value={
+                        values?.paymentAllowAccess?.map((a: any) => {
+                          return dataPaymentAllowFor[
+                            dataPaymentAllowFor.findIndex((b) => b.value == a)
+                          ];
+                        }) || []
+                      }
+                      required
+                    />
                   </div>
 
                   <div className="inline-flex gap-3 self-end mt-2">

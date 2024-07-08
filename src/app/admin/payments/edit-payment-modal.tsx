@@ -82,6 +82,11 @@ export default function AdminEditPaymentModal({
     return () => getPaymentMethodDetail.reset();
   }, [openModal]);
 
+  const dataPaymentAllowFor = [
+    { value: "DEPOSIT", label: "Deposit" },
+    { value: "TRANSACTION", label: "Transaction" },
+  ];
+
   if (!openModal) return null;
   return (
     <>
@@ -124,6 +129,8 @@ export default function AdminEditPaymentModal({
                   maxAmount: getPaymentMethodDetail?.data?.maxAmount,
                   cutOffStart: getPaymentMethodDetail?.data?.cutOffStart,
                   cutOffEnd: getPaymentMethodDetail?.data?.cutOffEnd,
+                  paymentAllowAccess:
+                    getPaymentMethodDetail?.data?.paymentAllowAccess,
                 }}
               >
                 {({ values, handleChange, handleSubmit, setFieldValue }) => (
@@ -304,6 +311,31 @@ export default function AdminEditPaymentModal({
                           onChange={handleChange}
                         />
                       </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-sm" htmlFor="name">
+                        Payment Allow For
+                      </Label>
+                      <Select
+                        name="paymentAllowAccess"
+                        isMulti
+                        options={dataPaymentAllowFor}
+                        onChange={(e) => {
+                          setFieldValue(
+                            "paymentAllowAccess",
+                            e.map((a: any) => a.value)
+                          );
+                        }}
+                        value={
+                          values?.paymentAllowAccess?.map((a: any) => {
+                            return dataPaymentAllowFor[
+                              dataPaymentAllowFor.findIndex((b) => b.value == a)
+                            ];
+                          }) || []
+                        }
+                        required
+                      />
                     </div>
 
                     <div className="inline-flex gap-3 self-end mt-2">

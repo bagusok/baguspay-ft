@@ -19,6 +19,15 @@ export function parseDate(date: string | Date) {
     .replace("pukul", " ");
 }
 
+export function parseDateWhithoutTime(date: string | Date) {
+  return new Date(date).toLocaleDateString("id-ID", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    weekday: "long",
+  });
+}
+
 export function priceFormat(price: number) {
   return new Intl.NumberFormat("id-ID", {
     style: "currency",

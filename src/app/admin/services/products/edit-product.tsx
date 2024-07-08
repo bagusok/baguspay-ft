@@ -67,11 +67,11 @@ export default function EditProduct({
       );
 
       if (response.data.statusCode == 200) {
-        toast.success(response.data.data.message);
+        toast.success(response.data.message);
         refetch();
         setOpenModal(false);
       } else {
-        toast.error(response.data.data.message);
+        toast.error(response.data.message);
       }
     },
   });

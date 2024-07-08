@@ -5,7 +5,6 @@ import { cn, priceFormat } from "@/lib/utils";
 import { RadioGroup, Tab } from "@headlessui/react";
 import Image from "next/image";
 import { FormEvent, useState } from "react";
-import SelectPaymentMethod from "./select-payment-method";
 import { Button } from "@/components/ui/button";
 import { Data, ServiceResponse } from "./service-response.type";
 import FormIdServer from "./form-id-server";
@@ -20,68 +19,27 @@ import { useAtomValue } from "jotai";
 import { userTokenAtom } from "@/store";
 import { axiosIn } from "@/lib/axios";
 
-export default function ClientOrderPage({ data }: { data: Data }) {
+export default function ClientCheckTagihanPage({ data }: { data: Data }) {
   const [productSelected, setProductSelected] = useState("");
-  const [paymentSelected, setPaymentSelected] = useState("");
-  const [paymentDetail, setPaymentDetail] = useState<{
-    id?: string;
-    name?: string;
-    productPrice?: number;
-    qty?: number;
-    totalProductPrice?: number;
-    fees?: number;
-    total?: number;
-  }>({ total: 0 });
 
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
   const [inputId, setInputId] = useState("");
 
   const router = useRouter();
   const userToken = useAtomValue(userTokenAtom);
 
-  const getPaymentMethod = useMutation({
-    mutationKey: ["getPaymentMethod"],
-    mutationFn: async (productId: string) =>
-      axiosIn
-        .post(
-          `${apiUrl}/ui/payment-method`,
-          {
-            productId,
-            qty: 1,
-          },
-          {
-            headers: {
-              ...(userToken && { Authorization: `Bearer ${userToken}` }),
-            },
-          }
-        )
-        .then((res) => res.data)
-        .catch((err) => toast.error(err)),
-  });
-
   const submitOrder = useMutation({
-    mutationKey: ["submit-order-"],
+    mutationKey: ["cek-tagihan"],
     mutationFn: async (e: FormEvent<HTMLFormElement>) => {
-      // const mergeInput = `${e.target?.input1?.value}:${e.target?.input2?.value}`;
-
       e.preventDefault();
 
-      return axiosIn
+      axiosIn
         .post(
-          `${apiUrl}/transaction/create`,
+          `${apiUrl}/transaction/inquiry`,
           {
-            // @ts-ignore
-            phone: phoneNumber,
-            productName: data.name,
-            productService: data.name,
-            productPrice: paymentDetail.productPrice,
-            productQty: paymentDetail.qty,
-            totalPrice: paymentDetail.total,
-            paymentName: paymentDetail.name,
-            paymentMethodId: paymentSelected,
+            customerNumber: inputId,
             productId: productSelected,
-            inputData: inputId,
+            phoneNumber: phoneNumber,
           },
           {
             headers: {
@@ -90,14 +48,12 @@ export default function ClientOrderPage({ data }: { data: Data }) {
           }
         )
         .then((res) => {
-          if (res.data.statusCode == 200) {
-            toast.success(res.data.message);
-            router.push("/transaction/history/" + res.data.data.id);
-          } else {
-            toast.error(res.data.message);
-          }
+          toast.success(res.data.message);
+          router.replace(`/transaction/inquiry/${res.data.data.id}`);
         })
-        .catch((err) => toast.error(err));
+        .catch((err) => {
+          toast.error(err.response.data.message);
+        });
     },
   });
 
@@ -168,25 +124,13 @@ export default function ClientOrderPage({ data }: { data: Data }) {
                 }
               )}
             >
-              <SelectPaymentMethod
-                setPaymentDetail={setPaymentDetail}
-                paymentDetail={paymentDetail}
-                isLoading={getPaymentMethod.isPending}
-                data={getPaymentMethod.data?.data}
-                selectedItem={paymentSelected}
-                setSelectedItem={setPaymentSelected}
-                defaultSelectedItem={getPaymentMethod.data?.selected}
-              />
-              <div className="w-full inline-flex justify-between items-center mt-3 bg-card">
-                <h4 className="font-semibold text-sm">
-                  {priceFormat(paymentDetail?.total ?? 0)}
-                </h4>
+              <div className="w-full inline-flex justify-end items-center mt-3 bg-card">
                 <Button
                   disabled={submitOrder.isPending}
                   type="submit"
                   className="text-sm bg-primary text-primary-foreground"
                 >
-                  {submitOrder.isPending ? "Loading..." : "Checkout"}
+                  {submitOrder.isPending ? "Loading..." : "Check Tagihan"}
                 </Button>
               </div>
             </div>
@@ -222,7 +166,6 @@ export default function ClientOrderPage({ data }: { data: Data }) {
                   value={productSelected}
                   onChange={(e) => {
                     setProductSelected(e);
-                    getPaymentMethod.mutate(e);
                   }}
                 >
                   {data.productGroup?.map((item, index) => (
@@ -231,15 +174,7 @@ export default function ClientOrderPage({ data }: { data: Data }) {
                       className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 grid-flow-row-dense gap-4"
                     >
                       {item.products?.map((product, index2) => (
-                        <RadioGroup.Option
-                          key={product.id}
-                          value={product.id}
-                          // onClick={() =>
-                          //   setPaymentDetail({
-
-                          //   })
-                          // }
-                        >
+                        <RadioGroup.Option key={product.id} value={product.id}>
                           {({ checked }) => (
                             <div
                               className={cn("px-4 py-2 rounded-md h-full", {
@@ -252,7 +187,7 @@ export default function ClientOrderPage({ data }: { data: Data }) {
                                 {product.name}
                               </h4>
                               <p className={cn("text-sm font-light")}>
-                                {priceFormat(product.price)}
+                                Fee {priceFormat(product.price)}
                               </p>
                             </div>
                           )}
@@ -283,12 +218,6 @@ export default function ClientOrderPage({ data }: { data: Data }) {
                 >
                   Whatsapp
                 </TabsTrigger>
-                <TabsTrigger
-                  className="data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:border data-[state=active]:border-primary dark:data-[state=active]:bg-primary-foreground dark:data-[state=active]:text-white"
-                  value="email"
-                >
-                  Email
-                </TabsTrigger>
               </TabsList>
               <TabsContent value="phone">
                 <Label htmlFor="phone">Nomor Whatsapp</Label>
@@ -298,15 +227,6 @@ export default function ClientOrderPage({ data }: { data: Data }) {
                   placeholder="08xxxxx"
                   value={phoneNumber}
                   onInput={(e) => setPhoneNumber(e.currentTarget.value)}
-                />
-              </TabsContent>
-              <TabsContent value="email">
-                <Label htmlFor="phone">Email</Label>
-                <Input
-                  type="email"
-                  placeholder="John@mail.com"
-                  value={email}
-                  onInput={(e) => setEmail(e.currentTarget.value)}
                 />
               </TabsContent>
             </Tabs>
@@ -338,12 +258,6 @@ export default function ClientOrderPage({ data }: { data: Data }) {
                   >
                     Whatsapp
                   </TabsTrigger>
-                  <TabsTrigger
-                    className="data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:border data-[state=active]:border-primary dark:data-[state=active]:bg-primary-foreground dark:data-[state=active]:text-white"
-                    value="email"
-                  >
-                    Email
-                  </TabsTrigger>
                 </TabsList>
                 <TabsContent value="phone" className="mt-0">
                   <Label htmlFor="phone" className="text-xs">
@@ -357,49 +271,18 @@ export default function ClientOrderPage({ data }: { data: Data }) {
                     onInput={(e) => setPhoneNumber(e.currentTarget.value)}
                   />
                 </TabsContent>
-                <TabsContent value="email" className="mt-0">
-                  <Label htmlFor="phone" className="text-xs">
-                    Email
-                  </Label>
-                  <Input
-                    type="email"
-                    placeholder="John@mail.com"
-                    value={email}
-                    onInput={(e) => setEmail(e.currentTarget.value)}
-                  />
-                </TabsContent>
               </Tabs>
             </div>
           </div>
 
           <hr className="bg-gray-200 mt-7" />
 
-          <div id="form-group" className="mt-6 mb-4 w-full h-12">
-            <Label htmlFor="input1">Pilih Pembayaran</Label>
-            <SelectPaymentMethod
-              setPaymentDetail={setPaymentDetail}
-              isLoading={getPaymentMethod.isPending}
-              data={getPaymentMethod.data?.data}
-              selectedItem={paymentSelected}
-              setSelectedItem={setPaymentSelected}
-              paymentDetail={paymentDetail}
-              defaultSelectedItem={getPaymentMethod.data?.selected}
-            />
-          </div>
-          <div className="w-full inline-flex justify-between items-center mt-6 bg-slate-100 dark:bg-white/20 p-3 rounded-lg">
-            <div className="inline-flex justify-between w-full">
-              <h4 className="font-semibold text-sm">Total</h4>
-              <h4 className="font-semibold text-sm">
-                {priceFormat(paymentDetail?.total ?? 0)}
-              </h4>
-            </div>
-          </div>
           <Button
             disabled={submitOrder.isPending}
             type="submit"
             className="mt-4 w-full rounded-md h-16 text-lg"
           >
-            {submitOrder.isPending ? "Loading..." : "Checkout"}
+            {submitOrder.isPending ? "Loading..." : "Check Tagihan"}
           </Button>
         </form>
       </div>

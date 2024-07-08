@@ -17,16 +17,23 @@ type Theme = "dark" | "light" | "system";
 export const filePickerOpenAtom = atom<boolean>(false);
 
 export const userTokenAtom = atomWithStorage<string | null>("token", null);
-export const userAtom = atomWithQuery<User>((get) => ({
+export const userAtom = atomWithQuery<User | null>((get) => ({
   queryKey: ["usersAtom", get(userTokenAtom)],
-  queryFn: async ({ queryKey: [, userToken] }) => {
+  queryFn: async () => {
+    const userToken = get(userTokenAtom);
+    const authorization = userToken
+      ? {
+          authorization: `Bearer ${userToken}`,
+        }
+      : {};
+
     const res = await axiosIn.get(`${apiUrl}/users/ping`, {
       headers: {
-        Authorization: `Bearer ${userToken}`,
+        ...authorization,
       },
     });
     if (res.data) {
-      return res.data.data;
+      return res.data.data as User;
     }
     return null;
   },
@@ -37,8 +44,9 @@ export const deviceIdAtom = atomWithStorage<string | null>("deviceId", null);
 interface User {
   id: string;
   username: string;
-  name: string;
+  longName: string;
   email?: string;
   nohp?: string;
   role: UserPermission;
+  balance: number;
 }

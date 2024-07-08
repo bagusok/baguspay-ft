@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { axiosIn } from "@/lib/axios";
 import { apiUrl } from "@/lib/constant";
 import { cn } from "@/lib/utils";
 import { userTokenAtom } from "@/store";
@@ -8,7 +9,7 @@ import { Cross2Icon } from "@radix-ui/react-icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import toast from "react-hot-toast";
 
 function FilePicker({
@@ -35,11 +36,14 @@ function FilePicker({
   } = useQuery({
     queryKey: ["get-file"],
     queryFn: () =>
-      fetch(`${apiUrl}/admin/file-picker/list`, {
-        headers: {
-          authorization: `Bearer ${userToken}`,
-        },
-      }).then((res) => res.json()),
+      axiosIn
+        .get(`${apiUrl}/admin/file-picker/list`, {
+          headers: {
+            authorization: `Bearer ${userToken}`,
+          },
+        })
+        .then((res) => res.data)
+        .catch((err) => toast.error(err.message)),
   });
 
   const uploadFile = useMutation({
@@ -47,20 +51,24 @@ function FilePicker({
     mutationFn: async (file: any) => {
       const formData = new FormData();
       formData.append("file", file);
-      const response = await fetch(`${apiUrl}/admin/file-picker/upload`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-        body: formData,
-      });
-      const json = await response.json();
-      if (json.statusCode == 200) {
-        toast.success(json.message);
+      const response = await axiosIn.post(
+        `${apiUrl}/admin/file-picker/upload`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+
+      if (response.data.statusCode == 200) {
         refetchFilePicker();
-        return json;
+        console.log("res", response.data);
+        toast.success(response.data.data.message);
+        return response.data;
       } else {
-        toast.error(json.message);
+        console.log("err");
+        toast.error(response.data.message);
       }
     },
   });
@@ -68,21 +76,23 @@ function FilePicker({
   const deleteFile = useMutation({
     mutationKey: ["filepicker-delete"],
     mutationFn: async (id: string) => {
-      const response = await fetch(`${apiUrl}/admin/file-picker/delete`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id }),
-      });
-      const json = await response.json();
-      if (json.statusCode == 200) {
-        toast.success(json.message);
+      const response = await axiosIn.post(
+        `${apiUrl}/admin/file-picker/delete`,
+        { id },
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.statusCode == 200) {
+        toast.success(response.data.message);
         refetchFilePicker();
-        return json;
+        return response.data;
       } else {
-        toast.error(json.message);
+        toast.error(response.data.message);
       }
     },
   });
@@ -130,8 +140,8 @@ function FilePicker({
             {data &&
               !uploadFile.isPending &&
               !deleteFile.isPending &&
-              data?.data?.map((file: any) => (
-                <li key={file.id}>
+              data?.data?.map((file: any, index: number) => (
+                <li key={file?.id ?? index}>
                   <input
                     type="radio"
                     id={file.key}

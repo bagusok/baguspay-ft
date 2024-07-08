@@ -2,10 +2,12 @@
 
 import { INavbarItem } from "@/lib/data/navbar.data";
 import { cn } from "@/lib/utils";
-import { isSidebarOpen } from "@/store";
+import { isSidebarOpen, userAtom, userTokenAtom } from "@/store";
+import { UserPermission } from "@/types/UserPermission";
 import { CaretRightIcon } from "@radix-ui/react-icons";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import Link from "next/link";
+import SidebarBalance from "./sidebar__balance";
 
 export default function UserSidebar({
   navItems = [],
@@ -13,6 +15,8 @@ export default function UserSidebar({
   navItems?: INavbarItem[];
 }) {
   const [openSidebar, setOpenSidebar] = useAtom(isSidebarOpen);
+  const userToken = useAtomValue(userTokenAtom);
+  const user = useAtomValue(userAtom);
 
   return (
     <>
@@ -51,20 +55,32 @@ export default function UserSidebar({
             </svg>
           </button>
         </div>
-        <div className="mt-5 w-full bg-card py-4 px-3 rounded shadow-sm">
-          <h2 className="text-lg font-semibold">Hi, Buyer</h2>
-          <p className="text-muted-foreground text-sm font-light font mt-2">
-            Please login to get cheaper price. If you dont have an account,
-            please create account by clicking the button below.
-          </p>
-          <div id="sidebar__btn-login" className="inline-flex gap-2 mt-3">
-            <button className="bg-primary text-primary-foreground font-semibold py-2 px-4 rounded">
-              Login
-            </button>
-            <button className="bg-card text-primary font-semibold py-2 px-4 rounded border border-primary">
-              Create Account
-            </button>
-          </div>
+        <div className="mt-5 py-4 rounded shadow-sm bg-primary-foreground px-2">
+          <h2 className="text-lg font-semibold">
+            Hi,{" "}
+            {user.data?.role == UserPermission.GUEST
+              ? "Buyer"
+              : user.data?.longName}
+          </h2>
+          {!userToken ||
+            (user.data?.role == UserPermission.GUEST ? (
+              <>
+                <p className="text-muted-foreground text-sm font-light font mt-2">
+                  Please login to get cheaper price. If you dont have an
+                  account, please create account by clicking the button below.
+                </p>
+                <div id="sidebar__btn-login" className="inline-flex gap-2 mt-3">
+                  <button className="bg-primary text-primary-foreground font-semibold py-2 px-4 rounded">
+                    Login
+                  </button>
+                  <button className="bg-card text-primary font-semibold py-2 px-4 rounded border border-primary">
+                    Create Account
+                  </button>
+                </div>
+              </>
+            ) : (
+              <SidebarBalance data={user.data} />
+            ))}
         </div>
         <ul id="sidebar__menu-item">
           {navItems?.map((item, index) => {
@@ -97,6 +113,29 @@ export default function UserSidebar({
               );
             }
           })}
+          <li className="mt-5 flex flex-col">
+            <h3 className="text-sm font-medium">My Accounts</h3>
+            <ul className="mt-2 flex flex-col gap-2">
+              <li className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16 border border-slate-300 shadow-sm dark:border-none">
+                <Link href="/user/profile" className="py-2 px-4 block w-full">
+                  <span className="text-base font-light">Profile</span>
+                </Link>
+                <CaretRightIcon className="scale-125" />
+              </li>
+              <li className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16 border border-slate-300 shadow-sm dark:border-none">
+                <Link href="/user/setting" className="py-2 px-4 block w-full">
+                  <span className="text-base font-light">Setting</span>
+                </Link>
+                <CaretRightIcon className="scale-125" />
+              </li>
+              <li className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16 border border-slate-300 shadow-sm dark:border-none">
+                <Link href="/user/logout" className="py-2 px-4 block w-full">
+                  <span className="text-base font-light">Logout</span>
+                </Link>
+                <CaretRightIcon className="scale-125" />
+              </li>
+            </ul>
+          </li>
         </ul>
       </div>
     </>

@@ -108,12 +108,7 @@ export const sidebarAdmin: INavbarItem[] = [
       },
       {
         id: 7,
-        title: "Deposit Method",
-        url: "/admin/payments/deposit-method",
-      },
-      {
-        id: 8,
-        title: "Deposit History",
+        title: "History Deposit",
         url: "/admin/payments/deposit-history",
       },
     ],
@@ -122,8 +117,14 @@ export const sidebarAdmin: INavbarItem[] = [
     id: 9,
     title: "Transactions",
     url: "/admin/transactions",
-    isHaveChild: false,
-    child: [],
+    isHaveChild: true,
+    child: [
+      {
+        id: 6,
+        title: "All Transactions",
+        url: "/admin/transactions",
+      },
+    ],
   },
   {
     id: 5,

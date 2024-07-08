@@ -76,6 +76,7 @@ export default function AdminProducts() {
           throw new Error(deleteProductGroup.data.message);
         }
         getProducts.refetch();
+        toast.success(deleteProductGroup.data.message);
         return deleteProductGroup.data;
       } catch (error: any) {
         toast.error(error.message);
@@ -97,7 +98,7 @@ export default function AdminProducts() {
         }
       );
       try {
-        if (editProduct.data.data.statusCode != 200) {
+        if (editProduct.data.statusCode != 200) {
           throw new Error(editProduct.data.message);
         }
 

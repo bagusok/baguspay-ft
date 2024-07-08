@@ -198,7 +198,7 @@ export default function SelectPaymentMethod({
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <Input
-          className="dark:outline-1 dark:border-white/80 h-12 rounded-md"
+          className="dark:outline-1 dark:border-white/80 h-12 rounded-md text-start"
           readOnly
           // placeholder={isLoading ? "Loading..." : "Pilih Pembayaran"}
           value={

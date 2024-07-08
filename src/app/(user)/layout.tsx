@@ -15,7 +15,7 @@ export default function UserLayout({
 }) {
   return (
     <>
-      <main className="w-full">
+      <main className="w-full relative">
         <UserNavbar navItems={navbarItems} />
         <div className="py-6 md:px-14 lg:px-32 ">
           <UserSidebar navItems={navbarItems}></UserSidebar>

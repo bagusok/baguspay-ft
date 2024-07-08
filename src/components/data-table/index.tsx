@@ -40,7 +40,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="my-4 w-full overflow-x-auto">
       <Table>
-        <TableHeader className="w-full">
+        <TableHeader>
           {table?.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
