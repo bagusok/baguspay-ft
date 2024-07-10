@@ -128,14 +128,20 @@ export default function SelectPaymentMethod({
                                         })
                                       }
                                       className="mt-1 h-full"
+                                      disabled={
+                                        payment?.balance < payment.total
+                                          ? true
+                                          : false
+                                      }
                                     >
-                                      {({ checked }) => (
+                                      {({ checked, disabled }) => (
                                         <div
                                           className={cn(
                                             "w-full h-full inline-flex items-center justify-between gap-5 rounded py-2 px-4 bg-slate-100 relative",
                                             {
                                               "bg-slate-200/50": !checked,
                                               "border border-primary": checked,
+                                              "opacity-40": disabled,
                                             }
                                           )}
                                         >
@@ -174,6 +180,11 @@ export default function SelectPaymentMethod({
                                               <CheckCircledIcon className="scale-150" />
                                             )}
                                           </div>
+                                          {disabled && (
+                                            <span className="px-3 py-0.5 text-xs bg-red-400 text-primary-foreground absolute top-0 right-0 rounded">
+                                              Tidak tersedia
+                                            </span>
+                                          )}
                                         </div>
                                       )}
                                     </RadioGroup.Option>

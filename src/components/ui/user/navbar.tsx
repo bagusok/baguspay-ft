@@ -148,7 +148,7 @@ export default function UserNavbar({
                 <Menu.Item as={Fragment}>
                   {({ active }: { active: boolean }) => (
                     <Link
-                      href="/profile"
+                      href="/user/profile"
                       className={cn("hover:text-primary", {
                         underline: active,
                       })}

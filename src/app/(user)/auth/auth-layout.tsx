@@ -27,7 +27,7 @@ export default function AuthLayout({
 
   if (getUser.error || getUser.data?.role === null) {
     return (
-      <div className="w-full h-dvh inline-flex justify-center items-center">
+      <div className="w-full h-dvh inline-flex justify-center items-center col-span-10">
         <h2 className="text-xl font-semibold">Something went wrong</h2>
       </div>
     );
@@ -60,8 +60,14 @@ export default function AuthLayout({
     }
 
     return (
-      <div className="w-full h-dvh inline-flex justify-center items-center">
-        <h2 className="text-xl font-semibold">PERMISSION DENIED</h2>
+      <div className="w-full h-dvh flex flex-col gap-5 justify-center items-center col-span-10">
+        <h2 className="text-xl font-semibold">Oops... Kamu tersesat</h2>
+        <Link
+          href="/"
+          className="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:opacity-70 w-fit"
+        >
+          Kembali ke home
+        </Link>
       </div>
     );
   }

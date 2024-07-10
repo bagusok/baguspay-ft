@@ -211,7 +211,7 @@ export default function ModalManageTransaction({
                 <div>
                   <Label className="text-sm">Qty</Label>
                   <Input
-                    value={getTransaction.data?.data?.qty}
+                    value={getTransaction.data?.data?.productQty}
                     className="text-sm w-full opacity-75"
                     readOnly
                   />
