@@ -6,6 +6,28 @@ import { cn, generateSignature, parseDate, priceFormat } from "@/lib/utils";
 import PaymentFormTemplate from "@/components/payment-template";
 import AlertPayment from "@/components/alert-payment";
 import RefreshHelper from "./RefreshHelper";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { SlashIcon } from "@radix-ui/react-icons";
+import ButtonCancelTransaction from "./ButtonCancelTransaction";
 
 export default async function TransactionDetailPage({
   params: { id },
@@ -16,13 +38,17 @@ export default async function TransactionDetailPage({
   if (getTransaction.statusCode == 404) return notFound();
 
   return (
-    <div className="bg-gray-100 md:bg-transparent dark:bg-transparent">
-      <div className="breadcrumb px-6 md:px-0 bg-white dark:bg-transparent pb-4">
-        <h1>Transaction Detail</h1>
+    <div className="bg-gray-100 md:bg-transparent dark:bg-transparent pt-2">
+      <div className="text-end bg-white">
+        <ButtonCancelTransaction
+          trxId={id}
+          isHide={getTransaction.data.paidStatus != "PENDING"}
+        />
       </div>
-      <section className="grid grid-flow-row lg:grid-cols-2 gap-5">
-        <div className="flex flex-col gap-4 w-full">
-          <div className="rounded-xl bg-white md:bg-primary-foreground dark:bg-primary-foreground dark:border-none md:border md:border-gray-200 w-full p-4">
+
+      <section className="grid grid-flow-row lg:grid-cols-2 gap-2 md:gap-4">
+        <div className="flex flex-col gap-2 md:gap-4 w-full">
+          <div className="md:rounded-xl bg-white md:bg-primary-foreground dark:bg-primary-foreground dark:border-none md:border md:border-gray-200 w-full p-4">
             <AlertPayment data={getTransaction.data} />
             <div className="mt-6 flex flex-col md:flex-row gap-3 justify-between w-full">
               <div className="">
@@ -61,7 +87,7 @@ export default async function TransactionDetailPage({
             </div>
             <PaymentFormTemplate data={getTransaction.data} />
           </div>
-          <div className="rounded-xl bg-white md:bg-primary-foreground dark:bg-primary-foreground dark:border-none md:border md:border-gray-200 w-full h-fit p-4 flex flex-col gap-3 overflow-x-auto">
+          <div className="md:rounded-xl bg-white md:bg-primary-foreground dark:bg-primary-foreground dark:border-none md:border md:border-gray-200 w-full h-fit p-4 flex flex-col gap-3 overflow-x-auto">
             <div className="inline-flex justify-between items-center w-full">
               <h3>ID Transaksi</h3>
               <p className="text-muted-foreground text-sm">
@@ -111,8 +137,8 @@ export default async function TransactionDetailPage({
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-4">
-          <div className="rounded-xl bg-white md:bg-primary-foreground dark:bg-primary-foreground dark:border-none md:border md:border-gray-200 w-full h-fit p-4 flex flex-col gap-3 overflow-x-auto">
+        <div className="flex flex-col gap-2 md:gap-4">
+          <div className="md:rounded-xl bg-white md:bg-primary-foreground dark:bg-primary-foreground dark:border-none md:border md:border-gray-200 w-full h-fit p-4 flex flex-col gap-3 overflow-x-auto">
             <h3 className="text-lg font-semibold">Detail Produk</h3>
             <hr className="bg-gray-200" />
             <div className="inline-flex justify-between items-center w-full">
@@ -134,7 +160,7 @@ export default async function TransactionDetailPage({
               </p>
             </div>
           </div>
-          <div className="rounded-xl bg-white md:bg-primary-foreground dark:bg-primary-foreground dark:border-none md:border md:border-gray-200 w-full h-fit p-4 flex flex-col gap-3 overflow-x-auto">
+          <div className="md:rounded-xl bg-white md:bg-primary-foreground dark:bg-primary-foreground dark:border-none md:border md:border-gray-200 w-full h-fit p-4 flex flex-col gap-3 overflow-x-auto">
             <h3 className="text-lg font-semibold">Detail Pembayaran</h3>
             <hr className="bg-gray-200" />
             <div className="inline-flex justify-between items-center w-full">

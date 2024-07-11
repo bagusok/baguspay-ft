@@ -11,8 +11,9 @@ export const isSidebarOpen = atom<boolean>(false);
 export const isSidebarAdminOpen = atom<boolean>(false);
 
 export const themeAtom = atomWithStorage<Theme>("theme", "light");
-
 type Theme = "dark" | "light" | "system";
+
+export const globalLoadingAtom = atom<boolean>(false);
 
 export const filePickerOpenAtom = atom<boolean>(false);
 

@@ -58,7 +58,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <section className="w-full inline-flex justify-center md:mt-14">
+    <section className="w-full inline-flex justify-center md:mt-14 px-4 md:px-0">
       <div className="md:w-[30rem] rounded-md bg-card flex flex-col gap-2 shadow-sm py-5 md:px-10">
         <h1 className="text-center text-xl md:text-2xl font-bold">Register</h1>
         <p className="text-muted-foreground text-sm text-light mt-2">

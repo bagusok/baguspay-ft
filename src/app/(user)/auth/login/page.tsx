@@ -9,7 +9,7 @@ import { userTokenAtom } from "@/store";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { useAtom } from "jotai";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -21,7 +21,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   if (getUserToken) {
-    router.push("/");
+    return redirect("/");
   }
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -34,22 +34,21 @@ export default function LoginPage() {
         password: e.currentTarget.password.value,
       });
 
-      if (login?.data.statusCode === 200) {
+      if (login?.data.statusCode == 200) {
         setUserToken(login.data.data.token);
         toast.success("Login success");
-        router.push("/");
       } else {
         toast.error("Login failed");
       }
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message ?? "Error");
     }
 
     setIsLoading(false);
   };
 
   return (
-    <section className="w-full inline-flex justify-center md:mt-14">
+    <section className="w-full inline-flex justify-center md:mt-14 px-4 md:px-0">
       <div className="md:w-[30rem] rounded-md bg-card flex flex-col gap-2 shadow-sm py-5 md:px-10">
         <h1 className="text-center text-xl md:text-2xl font-bold">Login</h1>
         <p className="text-muted-foreground text-sm text-light mt-2">

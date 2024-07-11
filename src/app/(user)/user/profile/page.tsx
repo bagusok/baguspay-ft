@@ -37,7 +37,7 @@ export default function UserDetails() {
   return (
     <>
       <AuthLayout roles={[UserPermission.USER, UserPermission.ADMIN]}>
-        <section className="w-full px-3">
+        <section className="w-full px-3 md:px-0">
           {getUserDetail.isPending && <div>Loading...</div>}
           {getUserDetail.isError && (
             <div>Error: {getUserDetail.error.message}</div>
@@ -45,7 +45,7 @@ export default function UserDetails() {
           {getUserDetail.data && (
             <>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="w-full p-2 rounded-md">
+                <div className="w-full py-2 rounded-md">
                   <h2 className="text-base font-semibold">Detail User</h2>
                   <p className="text-sm mt-1 text-muted-foreground">
                     Nama: {getUserDetail.data.longName}
@@ -60,7 +60,7 @@ export default function UserDetails() {
                     Phone: {getUserDetail.data.phone}
                   </p>
                 </div>
-                <div className="w-full p-2 rounded-md">
+                <div className="w-full py-2 rounded-md">
                   <h2 className="text-base font-semibold">Akun</h2>
                   <p className="text-sm mt-1 text-muted-foreground">
                     Is Banned:{" "}

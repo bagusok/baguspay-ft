@@ -4,6 +4,15 @@ import BalanceMutatiopn from "./BalanceMutation";
 import AuthLayout from "../../auth/auth-layout";
 import { UserPermission } from "@/types/UserPermission";
 import GetBalance from "./GetBalance";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { SlashIcon } from "@radix-ui/react-icons";
 
 export default function UserBalance() {
   return (

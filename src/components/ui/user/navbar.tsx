@@ -10,15 +10,24 @@ import {
   CaretDownIcon,
   MagnifyingGlassIcon,
   MoonIcon,
+  SlashIcon,
   SunIcon,
   TokensIcon,
 } from "@radix-ui/react-icons";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Fragment } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { Fragment, useMemo, useState } from "react";
 import { HiOutlineBell } from "react-icons/hi2";
 import { PiWalletLight } from "react-icons/pi";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "../breadcrumb";
 
 export default function UserNavbar({
   navItems = [],
@@ -30,6 +39,15 @@ export default function UserNavbar({
   const [theme, setTheme] = useAtom(themeAtom);
   const user = useAtomValue(userAtom);
   const router = useRouter();
+  const pathname = usePathname();
+
+  const mergePath: string[] = [];
+
+  const splitedPathname = useMemo(() => {
+    return pathname.split("/");
+  }, [pathname]);
+
+  console.log(pathname, splitedPathname);
 
   return (
     <>
@@ -203,6 +221,40 @@ export default function UserNavbar({
           </div>
         </div>
       </header>
+      <Breadcrumb className="md:px-14 lg:px-32 px-4 py-3">
+        <BreadcrumbList>
+          {splitedPathname.map((path, index) => {
+            if (index != splitedPathname.length - 1) {
+              path != "" && mergePath.push("/" + path);
+              return (
+                <Fragment key={index}>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink
+                      href={`${mergePath.join("").toString()}`}
+                      className="capitalize"
+                    >
+                      {path == "" ? "Home" : path}
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator>
+                    <SlashIcon />
+                  </BreadcrumbSeparator>
+                </Fragment>
+              );
+            } else {
+              return (
+                <Fragment key={index}>
+                  <BreadcrumbItem>
+                    <BreadcrumbPage className="capitalize">
+                      {path}
+                    </BreadcrumbPage>
+                  </BreadcrumbItem>
+                </Fragment>
+              );
+            }
+          })}
+        </BreadcrumbList>
+      </Breadcrumb>
     </>
   );
 }

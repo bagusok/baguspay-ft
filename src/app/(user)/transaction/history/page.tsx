@@ -15,6 +15,15 @@ import { ColumnDef } from "@tanstack/react-table";
 import { cn, parseDate, priceFormat } from "@/lib/utils";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { SlashIcon } from "@radix-ui/react-icons";
 
 export default function TransactionHistory() {
   const userToken = useAtomValue(userTokenAtom);
@@ -129,7 +138,6 @@ export default function TransactionHistory() {
   return (
     <AuthLayout roles={[UserPermission.ADMIN, UserPermission.USER]}>
       <div className="w-full px-6 md:px-0">
-        <h1 className="text-lg font-semibold mb-4">Transaction History</h1>
         <DataTable
           isLoading={getTransactionHistory.isLoading}
           columns={column}

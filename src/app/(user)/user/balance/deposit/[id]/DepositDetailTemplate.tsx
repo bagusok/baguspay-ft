@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import Image from "next/image";
 import toast from "react-hot-toast";
+import ButtonCancelDeposit from "./ButtonCancelDeposit";
 
 export default function DepositDetailTemplate({ id }: { id: string }) {
   const userToken = useAtomValue(userTokenAtom);
@@ -30,11 +31,15 @@ export default function DepositDetailTemplate({ id }: { id: string }) {
   if (getDepositDetail.isError) return <div>Error...</div>;
 
   return (
-    <div className="bg-gray-100 md:bg-transparent dark:bg-transparent">
-      <div className="breadcrumb px-4 md:px-0 bg-white dark:bg-transparent md:pb-4">
-        <h1>Deposit Detail</h1>
+    <div className="bg-gray-100 md:bg-transparent dark:bg-transparent pt-2">
+      <div className="text-end bg-white">
+        <ButtonCancelDeposit
+          depositId={id}
+          isHide={getDepositDetail.data.depositStatus != "PENDING"}
+          refetch={getDepositDetail.refetch}
+        />
       </div>
-      <section className="grid grid-flow-row lg:grid-cols-2 gap-5">
+      <section className="grid grid-flow-row lg:grid-cols-2 gap-3 md:gap-5">
         <div className="flex flex-col gap-4 w-full">
           <div className="rounded-xl bg-white md:bg-primary-foreground dark:bg-primary-foreground dark:border-none md:border md:border-gray-200 w-full p-4">
             <AlertDeposit data={getDepositDetail.data} />

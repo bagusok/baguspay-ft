@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { cn, priceFormat } from "@/lib/utils";
 import { RadioGroup, Tab } from "@headlessui/react";
 import Image from "next/image";
-import { FormEvent, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import SelectPaymentMethod from "./select-payment-method";
 import { Button } from "@/components/ui/button";
 import { Data, ServiceResponse } from "./service-response.type";
@@ -16,8 +16,8 @@ import { Input } from "@/components/ui/input";
 import UrutanOrder from "./UrutanOrder";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { useAtomValue } from "jotai";
-import { userTokenAtom } from "@/store";
+import { useAtomValue, useSetAtom } from "jotai";
+import { globalLoadingAtom, userTokenAtom } from "@/store";
 import { axiosIn } from "@/lib/axios";
 
 export default function ClientOrderPage({ data }: { data: Data }) {
@@ -39,6 +39,7 @@ export default function ClientOrderPage({ data }: { data: Data }) {
 
   const router = useRouter();
   const userToken = useAtomValue(userTokenAtom);
+  const setGlobalLoading = useSetAtom(globalLoadingAtom);
 
   const getPaymentMethod = useMutation({
     mutationKey: ["getPaymentMethod"],
@@ -100,6 +101,14 @@ export default function ClientOrderPage({ data }: { data: Data }) {
         .catch((err) => toast.error(err));
     },
   });
+
+  useMemo(() => {
+    if (submitOrder.isPending || getPaymentMethod.isPending) {
+      setGlobalLoading(true);
+    } else {
+      setGlobalLoading(false);
+    }
+  }, [getPaymentMethod, submitOrder]);
 
   return (
     <section className="w-full grid lg:grid-cols-3 gap-4 relative md:bg-white dark:bg-inherit">

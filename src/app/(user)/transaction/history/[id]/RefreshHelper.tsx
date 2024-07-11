@@ -14,7 +14,7 @@ export default function RefreshHelper({ data }: { data: any }) {
         data.paidStatus != "EXPIRED" ||
         data.paidStatus != "PAID"
       ) {
-        router.push(pathname + "?time=" + new Date().getTime());
+        router.replace(pathname + "?time=" + new Date().getTime());
       }
     }, 60000);
 
