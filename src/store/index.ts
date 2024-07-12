@@ -50,4 +50,5 @@ interface User {
   nohp?: string;
   role: UserPermission;
   balance: number;
+  isBanned: boolean;
 }

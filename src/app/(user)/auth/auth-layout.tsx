@@ -1,7 +1,9 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { userAtom, userTokenAtom } from "@/store";
 import { UserPermission } from "@/types/UserPermission";
+import { AxiosError } from "axios";
 import { useAtomValue, useSetAtom } from "jotai";
 import Link from "next/link";
 import { redirect, RedirectType, useRouter } from "next/navigation";
@@ -25,20 +27,44 @@ export default function AuthLayout({
     );
   }
 
-  if (getUser.error || getUser.data?.role === null) {
+  if (getUser.error) {
+    if ((getUser.error as AxiosError).response?.status === 401) {
+      setUserToken(null);
+      return redirect("/auth/login", RedirectType.replace);
+    } else if ((getUser.error as AxiosError).response?.status === 403) {
+      return (
+        <div className="w-full h-dvh flex flex-col justify-center items-center col-span-10">
+          <h2 className="text-xl font-semibold">
+            {/* @ts-ignore */}
+            {(getUser.error as AxiosError).response?.data.message}
+          </h2>
+          <Button
+            onClick={(e) => {
+              setUserToken(null);
+              redirect("/auth/login", RedirectType.replace);
+            }}
+            className="mt-3"
+          >
+            Logout
+          </Button>
+        </div>
+      );
+    }
+
     return (
-      <div className="w-full h-dvh inline-flex justify-center items-center col-span-10">
+      <div className="w-full h-dvh flex flex-col justify-center items-center col-span-10">
         <h2 className="text-xl font-semibold">Something went wrong</h2>
+        <Button onClick={(e) => window.location.reload} className="mt-3">
+          Reload Page
+        </Button>
       </div>
     );
   }
 
-  if (!getUser.data) {
+  if (!getUser.data?.role) {
     setUserToken(null);
-    return redirect("/auth/login", RedirectType.push);
+    return redirect("/auth/login", RedirectType.replace);
   }
-
-  console.log(getUser.data.role, roles);
 
   if (roles.includes(getUser!.data!.role)) {
     return children as JSX.Element;
