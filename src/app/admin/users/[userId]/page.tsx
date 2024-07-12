@@ -13,6 +13,7 @@ import ChartBalanceMutation from "./chart-balanceMutation";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { cn, parseDate, priceFormat } from "@/lib/utils";
+import ModalChangeProfile from "./modal-change-profile";
 
 export default function UserDetails() {
   const userToken = useAtomValue(userTokenAtom);
@@ -42,7 +43,13 @@ export default function UserDetails() {
             <>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="w-full p-2 rounded-md">
-                  <h2 className="text-base font-semibold">Detail User</h2>
+                  <div className="inline-flex justify-between w-full">
+                    <h2 className="text-base font-semibold">Detail User</h2>
+                    <ModalChangeProfile
+                      data={getUserDetail?.data}
+                      userId={params.userId as string}
+                    />
+                  </div>
                   <p className="text-sm mt-1 text-muted-foreground">
                     Nama: {getUserDetail.data.longName}
                   </p>

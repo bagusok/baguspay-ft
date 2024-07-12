@@ -13,6 +13,7 @@ import ChartBalanceMutation from "./chart-balanceMutation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { cn, parseDate, priceFormat } from "@/lib/utils";
 import { useEffect } from "react";
+import ModalChangeProfile from "./modal-change-profile";
 
 export default function UserDetails() {
   const userToken = useAtomValue(userTokenAtom);
@@ -46,7 +47,11 @@ export default function UserDetails() {
             <>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="w-full py-2 rounded-md">
-                  <h2 className="text-base font-semibold">Detail User</h2>
+                  <div className="inline-flex justify-between w-full">
+                    <h2 className="text-base font-semibold">Detail User</h2>
+                    <ModalChangeProfile data={getUserDetail?.data} />
+                  </div>
+
                   <p className="text-sm mt-1 text-muted-foreground">
                     Nama: {getUserDetail.data.longName}
                   </p>
@@ -112,7 +117,7 @@ export default function UserDetails() {
                 <div className="bg-slate-100 rounded-md w-full p-2">
                   <h3 className="text-sm">Saldo Terpakai</h3>
                   <p className="font-semibold text-sm mt-1">
-                    {priceFormat(getUserDetail.data.usedBalance._sum.amount)}
+                    {priceFormat(getUserDetail.data.usedBalance?._sum.amount)}
                   </p>
 
                   <Link
@@ -126,7 +131,7 @@ export default function UserDetails() {
                   <h3 className="text-sm">Transaksi Sukses</h3>
                   <p className="font-semibold text-sm mt-1">
                     {priceFormat(
-                      getUserDetail.data.totalTransaction._sum.totalPrice
+                      getUserDetail.data.totalTransaction?._sum.totalPrice
                     )}
                   </p>
 
