@@ -55,7 +55,7 @@ export default function UserSidebar({
             </svg>
           </button>
         </div>
-        <div className="mt-5 py-4 rounded shadow-sm bg-primary-foreground px-2">
+        <div className="mt-5 py-4 rounded shadow-sm bg-primary-foreground">
           <h2 className="text-lg font-semibold">
             Hi,{" "}
             {user.data?.role == UserPermission.GUEST
@@ -97,6 +97,7 @@ export default function UserSidebar({
                             className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16 border border-slate-300 shadow-sm dark:border-none"
                           >
                             <Link
+                              onClick={() => setOpenSidebar(false)}
                               href={child.url}
                               className="py-2 px-4 block w-full"
                             >
@@ -111,25 +112,53 @@ export default function UserSidebar({
                   </ul>
                 </li>
               );
+            } else {
+              return (
+                <li
+                  key={index}
+                  className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16 border border-slate-300 shadow-sm dark:border-none"
+                >
+                  <Link
+                    onClick={() => setOpenSidebar(false)}
+                    href={item.url}
+                    className="py-2 px-4 block w-full"
+                  >
+                    <span className="text-base font-light">{item.title}</span>
+                  </Link>
+                  <CaretRightIcon className="scale-125" />
+                </li>
+              );
             }
           })}
           <li className="mt-5 flex flex-col">
             <h3 className="text-sm font-medium">My Accounts</h3>
             <ul className="mt-2 flex flex-col gap-2">
               <li className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16 border border-slate-300 shadow-sm dark:border-none">
-                <Link href="/user/profile" className="py-2 px-4 block w-full">
+                <Link
+                  onClick={() => setOpenSidebar(false)}
+                  href="/user/profile"
+                  className="py-2 px-4 block w-full"
+                >
                   <span className="text-base font-light">Profile</span>
                 </Link>
                 <CaretRightIcon className="scale-125" />
               </li>
               <li className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16 border border-slate-300 shadow-sm dark:border-none">
-                <Link href="/user/setting" className="py-2 px-4 block w-full">
+                <Link
+                  onClick={() => setOpenSidebar(false)}
+                  href="/user/setting"
+                  className="py-2 px-4 block w-full"
+                >
                   <span className="text-base font-light">Setting</span>
                 </Link>
                 <CaretRightIcon className="scale-125" />
               </li>
               <li className="bg-card rounded w-full inline-flex items-center justify-between px-2 h-16 border border-slate-300 shadow-sm dark:border-none">
-                <Link href="/user/logout" className="py-2 px-4 block w-full">
+                <Link
+                  onClick={() => setOpenSidebar(false)}
+                  href="/auth/logout"
+                  className="py-2 px-4 block w-full"
+                >
                   <span className="text-base font-light">Logout</span>
                 </Link>
                 <CaretRightIcon className="scale-125" />

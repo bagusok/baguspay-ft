@@ -32,8 +32,9 @@ export default function DepositDetailTemplate({ id }: { id: string }) {
 
   return (
     <div className="bg-gray-100 md:bg-transparent dark:bg-transparent pt-2">
-      <div className="text-end bg-white">
+      <div className="text-end bg-white md:inline-flex justify-end w-full hidden">
         <ButtonCancelDeposit
+          className="hidden md:block"
           depositId={id}
           isHide={getDepositDetail.data.depositStatus != "PENDING"}
           refetch={getDepositDetail.refetch}
@@ -41,7 +42,7 @@ export default function DepositDetailTemplate({ id }: { id: string }) {
       </div>
       <section className="grid grid-flow-row lg:grid-cols-2 gap-3 md:gap-5">
         <div className="flex flex-col gap-4 w-full">
-          <div className="rounded-xl bg-white md:bg-primary-foreground dark:bg-primary-foreground dark:border-none md:border md:border-gray-200 w-full p-4">
+          <div className="md:rounded-xl bg-white md:bg-primary-foreground dark:bg-primary-foreground dark:border-none md:border md:border-gray-200 w-full p-4">
             <AlertDeposit data={getDepositDetail.data} />
             <div className="mt-6 flex flex-col md:flex-row gap-3 justify-between w-full">
               <div className="">
@@ -81,7 +82,7 @@ export default function DepositDetailTemplate({ id }: { id: string }) {
             )}
           </div>
         </div>
-        <div className="rounded-xl bg-white md:bg-primary-foreground dark:bg-primary-foreground dark:border-none md:border md:border-gray-200 w-full h-fit p-4 flex flex-col gap-3 overflow-x-auto">
+        <div className="md:rounded-xl bg-white md:bg-primary-foreground dark:bg-primary-foreground dark:border-none md:border md:border-gray-200 w-full h-fit p-4 flex flex-col gap-3 overflow-x-auto">
           <h3 className="text-lg font-semibold">Detail Pembayaran</h3>
           <hr className="bg-gray-200" />
           <div className="inline-flex justify-between items-center w-full">
@@ -103,6 +104,14 @@ export default function DepositDetailTemplate({ id }: { id: string }) {
               {priceFormat(getDepositDetail.data.total)}
             </p>
           </div>
+        </div>
+        <div className="w-full px-4 md:hidden">
+          <ButtonCancelDeposit
+            className="w-full"
+            depositId={id}
+            isHide={getDepositDetail.data.depositStatus != "PENDING"}
+            refetch={getDepositDetail.refetch}
+          />
         </div>
       </section>
       {/* <RefreshHelper data={getDepositDetail.data} /> */}

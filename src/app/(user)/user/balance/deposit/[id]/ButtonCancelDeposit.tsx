@@ -23,10 +23,12 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 
 export default function ButtonCancelDeposit({
+  className,
   depositId,
   isHide,
   refetch,
 }: {
+  className?: string;
   depositId: string;
   isHide: boolean;
   refetch: () => void;
@@ -77,7 +79,7 @@ export default function ButtonCancelDeposit({
         <Button
           variant="default"
           size="sm"
-          className={cn("bg-red-500 my-2", {
+          className={cn("bg-red-500 mt-2 md:my-2", className, {
             hidden: isHide,
           })}
         >

@@ -98,7 +98,10 @@ export default function ClientOrderPage({ data }: { data: Data }) {
             toast.error(res.data.message);
           }
         })
-        .catch((err) => toast.error(err));
+        .catch((err) => {
+          console.log(err);
+          toast.error(err.response.data.message);
+        });
     },
   });
 
